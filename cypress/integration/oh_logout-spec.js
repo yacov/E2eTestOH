@@ -18,10 +18,10 @@ describe('Test on logout function', function () {
 
         cy.visit('https://oh-idm-prod.acceliqc.com/app/home');
 
-
     });
     it('Should require login after logout from Home page', function () {
         cy.visit('https://oh-idm-prod.acceliqc.com/');
+        cy.get('#Username').should('be','visible');
         cy.get('#Username').clear().type('IDMTestV2');
         cy.get('#Password').clear().type('@IDMTestV2');
         cy.get('button[type=\'submit\']').click();
