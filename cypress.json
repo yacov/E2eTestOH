@@ -1,0 +1,12 @@
+{
+  "animationDistanceThreshold": 100,
+  "env": {
+    "testUserName": "Superlion",
+    "testUsersPassword": "CTAKAH613777"
+  },
+  "defaultCommandTimeout": 40000,
+  "chromeWebSecurity": false,
+  "$schema": "https://on.cypress.io/cypress.schema.json",
+  "pageLoadTimeout": 50000,
+  "projectId": "xhwbke"
+}

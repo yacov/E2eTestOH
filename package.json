@@ -1,0 +1,17 @@
+{
+  "name": "dtasmoke",
+  "version": "1.0.0",
+  "description": "DTA Smoke test ",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "cypress": "^4.12.1",
+    "eslint": "^7.2.0",
+    "eslint-plugin-cypress": "^2.11.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Iakov VOlfkovich",
+  "license": "ISC"
+}

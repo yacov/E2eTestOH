@@ -1,0 +1,39 @@
+{
+  "loginPage": {
+    "usernameField": "#UserName",
+    "passwordField": "#Password",
+    "loginButton": "#lnkLogin"
+  },
+  "managementPage": {
+    "inviteNewUserButton": ".users-title-container button.mat-primary",
+    "resendInvitationButton": ".user-card__user-resend-invitation-button",
+    "moreOptionsButton": "dd-user-card:last-child .user-card__delete-action",
+    "deleteUserButton": ".mat-menu-content > button:last-child",
+    "warningWindowConfirmButton": ".delete-user-dialog__confirm-button",
+    "warningWindowCancelButton": ".mat-secondary",
+    "INUDialogWindow": ".dialog-header",
+    "INUNameField": "input[name=username]",
+    "INUEmailField": "input[name=email]",
+    "INUerrNameMessage": "#mat-error-0",
+    "INUerrEmailMessage": "#mat-error-1",
+    "INUcancelButton": ".invite-new-user__form__cancel-button",
+    "INUinviteUserButton": "button[type=submit]"
+  },
+  "setPasswordPage": {
+    "submitButton": "button[type=submit]",
+    "passwordField": "input[placeholder=New password]",
+    "confirmPasswordField": "input[placeholder=Confirm new password]",
+    "errPasswordMessage": ".fadeInUp",
+    "setPasswordHeader": ".auth0-lock-name"
+  },
+  "aiDetectionBotsPage": {
+    "responseDropdown": "mat-select-trigger.selector__name.ng-star-inserted"
+  },
+  "forgotPasswordPage": {
+    "emailField": "input[name=email]",
+    "submitButton": "button[type=submit]",
+    "differentUserLink": ".signin-link",
+    "logoImage": "dd-logo > img",
+    "errMessage": "#mat-error-0"
+  }
+}
