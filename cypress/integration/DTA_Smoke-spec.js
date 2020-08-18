@@ -1,4 +1,4 @@
-const urls = ["https://dc.acceliplan.com/", "https://washoe.acceliplan.com/","https://dade.acceliplan.com/", "https://broward.acceliplan.com/"];
+const urls = ["https://dc.acceliplan.com/", "https://santa-rosa.acceliplan.com/","https://tx.acceliplan.com/", "https://washoe.acceliplan.com/","https://dade.acceliplan.com/", "https://broward.acceliplan.com/"];
 let spy;
 let schoolName1;
 let schoolName2;
@@ -12,7 +12,7 @@ beforeEach(function () {
 });
 urls.forEach((url) => {
 
-    describe.skip('Test DTA System Availability on ' + url, function () {
+    describe('Test DTA System Availability on ' + url, function () {
 
         it('DTA system check', function () {
             cy.manualLogin(url);
@@ -25,25 +25,25 @@ urls.forEach((url) => {
                 expect(xhr.status).to.equal(200);
             });
             cy.contains('Dashboards', {timeout: 170000}).should('be', 'visible');
-            cy.log('Should display the listing of dashboards available');
+            /*cy.log('Should display the listing of dashboards available');
             cy.contains('Dashboards').click();
             cy.get('div.search').should('be', 'visible');
             cy.get('div.search').type('Events by Student');
             cy.log('Should display `Events by student` dashboard');
             cy.get('[title=\'Events by Student\'] span').should('be', 'visible');
             cy.get('[title=\'Events by Student\'] span').click();
-            /* Cypress.on('window:before:load', (win) => {
+            /!* Cypress.on('window:before:load', (win) => {
                  spy = cy.spy(win.console, "error")
-             })*/
+             })*!/
             //cy.server()
-            // cy.route('GET', '*/jaql').as('getEventByStudent');
+            // cy.route('GET', '*!/jaql').as('getEventByStudent');
             cy.wait('@getReports', {timeout: 170000}).then((xhr) => {
                 expect(xhr.status).to.equal(200);
                 // expect(spy).not.to.be.called;
-            });
-            cy.log('Should display Filters for \'Events by Student\' dashboard ');
+            });*/
+            cy.log('Should display Filters');
             cy.get('.toolbox-min-menu').contains('Filters', {timeout: 170000}).should('be', 'visible');
-            cy.get('.toolbox-min-menu').contains('Filters').click();
+           /* cy.get('.toolbox-min-menu').contains('Filters').click();
             cy.log('Should display List of schools');
 
             cy.get('div.f-wrapper').contains('School Name').find('[data-translate-attr-title=\'we.actions.editfilter\']').then(($editFilter) => {
@@ -81,7 +81,7 @@ urls.forEach((url) => {
             cy.wait('@getReports', {timeout: 170000}).then((xhr) => {
                 expect(xhr.status).to.equal(200);
                 // expect(spy).not.to.be.called;
-            });
+            });*/
             cy.log('Click Logout button.');
             cy.get('div.header-button').click();
             cy.get('#UserName').should('be', 'visible');
