@@ -25,16 +25,16 @@ urls.forEach((url) => {
                 expect(xhr.status).to.equal(200);
             });
             cy.contains('Dashboards', {timeout: 170000}).should('be', 'visible');
-            /*cy.log('Should display the listing of dashboards available');
+            cy.log('Should display the listing of dashboards available');
             cy.contains('Dashboards').click();
             cy.get('div.search').should('be', 'visible');
-            cy.get('div.search').type('Events by Student');
+            /*cy.get('div.search').type('Events by Student');
             cy.log('Should display `Events by student` dashboard');
             cy.get('[title=\'Events by Student\'] span').should('be', 'visible');
             cy.get('[title=\'Events by Student\'] span').click();
             /!* Cypress.on('window:before:load', (win) => {
                  spy = cy.spy(win.console, "error")
-             })*!/
+             });
             //cy.server()
             // cy.route('GET', '*!/jaql').as('getEventByStudent');
             cy.wait('@getReports', {timeout: 170000}).then((xhr) => {
