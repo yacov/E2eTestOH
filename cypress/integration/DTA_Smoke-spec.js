@@ -1,4 +1,5 @@
-const urls = ["https://dc.acceliplan.com/", "https://santa-rosa.acceliplan.com/","https://tx.acceliplan.com/", "https://washoe.acceliplan.com/","https://dade.acceliplan.com/", "https://broward.acceliplan.com/"];
+
+const urls = ["https://dc.acceliplan.com/","https://tx.acceliplan.com/", "https://washoe.acceliplan.com/","https://dade.acceliplan.com/", "https://broward.acceliplan.com/","https://santa-rosa.acceliplan.com/"];
 let spy;
 let schoolName1;
 let schoolName2;
@@ -16,12 +17,12 @@ urls.forEach((url) => {
 
         it('DTA system check', function () {
             cy.manualLogin(url);
-            cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})
+          /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})
             cy.log('Should display DTA site');
-            cy.visit(url + 'sreport')
+            cy.visit(url + 'sreport')*/
             cy.server()
             cy.route('GET', '*/dashboards/*').as('getReports');
-            cy.wait('@getReports', {timeout: 170000}).then((xhr) => {
+            cy.wait('@getReports', {timeout: 170000}, {multiple:true}).then((xhr) => {
                 expect(xhr.status).to.equal(200);
             });
             cy.contains('Dashboards', {timeout: 170000}).should('be', 'visible');

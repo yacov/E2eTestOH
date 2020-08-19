@@ -26,7 +26,7 @@
 Cypress.Commands.add('manualLogin', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
-        cy.visit(urll + 'Login.aspx');
+        cy.visit(urll + 'Login.aspx?ReturnUrl=%2fsreport');
         cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
         cy.get(loginPage.passwordField).clear().type(Cypress.env('testUsersPassword'));
         cy.get(loginPage.loginButton).click();
