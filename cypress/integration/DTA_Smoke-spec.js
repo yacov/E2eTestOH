@@ -17,9 +17,9 @@ urls.forEach((url) => {
 
         it('DTA system check', function () {
             cy.manualLogin(url);
-          /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})
+          /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
             cy.log('Should display DTA site');
-            cy.visit(url + 'sreport')*/
+            cy.visit(url + 'sreport')
             cy.server()
             cy.route('GET', '*/dashboards/*').as('getReports');
             cy.wait('@getReports', {timeout: 170000}, {multiple:true}).then((xhr) => {
@@ -83,9 +83,9 @@ urls.forEach((url) => {
                 expect(xhr.status).to.equal(200);
                 // expect(spy).not.to.be.called;
             });*/
-            cy.log('Click Logout button.');
+          /*  cy.log('Click Logout button.');
             cy.get('div.header-button').click();
-            cy.get('#UserName').should('be', 'visible');
+            cy.get('#UserName').should('be', 'visible');*/
         });
     });
 });
