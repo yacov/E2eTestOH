@@ -3,6 +3,7 @@
   "env": {
     "testUserName": "Superlion",
     "testUsersPassword": "CTAKAH613777",
+    "qcUsersPassword": "success",
     "eventURL": "e6712fac-f6a5-4163-89aa-ac1d011b00cb"
   },
   "defaultCommandTimeout": 40000,

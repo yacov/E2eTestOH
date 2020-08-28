@@ -26,9 +26,19 @@
 Cypress.Commands.add('manualLogin', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
-        cy.visit(urll + 'Login.aspx?ReturnUrl=%2fAcceliTrack/Home.aspx');
+        cy.visit(urll + '/Login.aspx?ReturnUrl=%2fAcceliTrack/Home.aspx');
         cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
         cy.get(loginPage.passwordField).clear().type(Cypress.env('testUsersPassword'));
+        cy.get(loginPage.loginButton).click();
+    })
+});
+
+Cypress.Commands.add('txqclLogin', (urll) => {
+    return cy.fixture('pages').then((pages) => {
+        const loginPage = pages.loginPage;
+        cy.visit(urll + '/Login.aspx?ReturnUrl=%2fAcceliTrack/Home.aspx');
+        cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
+        cy.get(loginPage.passwordField).clear().type(Cypress.env('qcUsersPassword'));
         cy.get(loginPage.loginButton).click();
     })
 });
@@ -36,7 +46,7 @@ Cypress.Commands.add('manualLogin', (urll) => {
 Cypress.Commands.add('login', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
-        cy.visit(urll + 'Login.aspx');
+        cy.visit(urll + '/Login.aspx');
         cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
         cy.get(loginPage.passwordField).clear().type(Cypress.env('testUsersPassword'));
         cy.get(loginPage.loginButton).click();
