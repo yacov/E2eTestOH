@@ -33,6 +33,16 @@ Cypress.Commands.add('manualLogin', (urll) => {
     })
 });
 
+Cypress.Commands.add('manualLoginTX', (urll) => {
+    return cy.fixture('pages').then((pages) => {
+        const loginPage = pages.loginPage;
+        cy.visit(urll + '/Login.aspx?ReturnUrl=%2fAcceliTrack/Home.aspx');
+        cy.get(loginPage.usernameField).clear().type('DTATester');
+        cy.get(loginPage.passwordField).clear().type('Password!1');
+        cy.get(loginPage.loginButton).click();
+    })
+});
+
 Cypress.Commands.add('txqclLogin', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
