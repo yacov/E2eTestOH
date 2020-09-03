@@ -1,5 +1,5 @@
 
-const urls = ["https://dc.acceliplan.com/","https://tx.acceliplan.com/", "https://washoe.acceliplan.com/","https://dade.acceliplan.com/", "https://broward.acceliplan.com/","https://santa-rosa.acceliplan.com/"];
+const urls = ["https://dc.acceliplan.com/","https://tx.acceliplan.com/", "https://washoe.acceliplan.com/","https://broward.acceliplan.com/","https://santa-rosa.acceliplan.com/"];
 let spy;
 let schoolName1;
 let schoolName2;
@@ -11,11 +11,11 @@ beforeEach(function () {
         });
 
 });
-urls.forEach((url) => {
 
-    describe('Test DTA System Availability on ' + url, function () {
 
-        it('DTA system check', function () {
+    describe('Test DTA System Availability', function () {
+        urls.forEach((url) => {
+        it('DTA system check on ' + url, function () {
             cy.manualLogin(url);
           /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
             cy.log('Should display DTA site');
@@ -25,13 +25,18 @@ urls.forEach((url) => {
             cy.wait('@getReports', {timeout: 170000}, {multiple:true}).then((xhr) => {
                 expect(xhr.status).to.equal(200);
             });
-            cy.contains('Dashboards', {timeout: 170000}).should('be', 'visible');
+            cy.get('.toolbox-min-user div').contains('Dashboards', {timeout: 170000}).should('be.visible');
+
+
+                cy.get('.highcharts-point',{multiple:true}).should('be.visible');
+
+
             cy.log('Should display the listing of dashboards available');
-            cy.contains('Dashboards').click();
-            cy.get('div.search').should('be', 'visible');
+            cy.get('.toolbox-min-user div').contains('Dashboards').click();
+            cy.get('div.search').should('be.visible');
             /*cy.get('div.search').type('Events by Student');
             cy.log('Should display `Events by student` dashboard');
-            cy.get('[title=\'Events by Student\'] span').should('be', 'visible');
+            cy.get('[title=\'Events by Student\'] span').should('be.visible');
             cy.get('[title=\'Events by Student\'] span').click();
             /!* Cypress.on('window:before:load', (win) => {
                  spy = cy.spy(win.console, "error")
@@ -43,18 +48,18 @@ urls.forEach((url) => {
                 // expect(spy).not.to.be.called;
             });*/
             cy.log('Should display Filters');
-            cy.get('.toolbox-min-menu').contains('Filters', {timeout: 170000}).should('be', 'visible');
+            cy.get('.toolbox-min-menu').contains('Filters', {timeout: 170000}).should('be.visible');
            /* cy.get('.toolbox-min-menu').contains('Filters').click();
             cy.log('Should display List of schools');
 
             cy.get('div.f-wrapper').contains('School Name').find('[data-translate-attr-title=\'we.actions.editfilter\']').then(($editFilter) => {
-                should('be', 'visible');
+                should('be.visible');
                 cy.get($editFilter).click();
             });
 
 
-            cy.get('div.subtitle').contains('Edit Filter').should('be', 'visible');
-            cy.get('.checkmode-toggle.select-all').should('be', 'visible');
+            cy.get('div.subtitle').contains('Edit Filter').should('be.visible');
+            cy.get('.checkmode-toggle.select-all').should('be.visible');
             cy.log('All schools in the list should be checked');
             cy.get('[data-ng-class=\'selectModeClass()\']').should('not.have.attr', 'class', 'uc-chk-icon-empty').and('have.attr', 'class', ' uc-chk-icon-check');
             cy.get('.checkmode-toggle.select-all').click();
@@ -85,7 +90,29 @@ urls.forEach((url) => {
             });*/
           /*  cy.log('Click Logout button.');
             cy.get('div.header-button').click();
-            cy.get('#UserName').should('be', 'visible');*/
+            cy.get('#UserName').should('be.visible');*/
         });
     });
+        it('DTA system check on https://dade.acceliplan.com/', function () {
+            var url = 'https://dade.acceliplan.com/'
+                cy.manualLogin(url);
+            /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
+            cy.log('Should display DTA site');
+            cy.visit(url + 'sreport')
+            cy.server()
+            cy.route('GET', '*/dashboards/*').as('getReports');
+            cy.wait('@getReports', {timeout: 170000}, {multiple:true}).then((xhr) => {
+                expect(xhr.status).to.equal(200);
+            });
+            cy.get('.toolbox-min-user div').contains('Dashboards', {timeout: 170000}).should('be.visible');
+
+            cy.get('svg.hmw-half-year',{multiple:true}).should('be.visible');
+
+            cy.log('Should display the listing of dashboards available');
+            cy.get('.toolbox-min-user div').contains('Dashboards').click();
+            cy.get('div.search').should('be.visible');
+            cy.log('Should display Filters');
+            cy.get('.toolbox-min-menu').contains('Filters', {timeout: 170000}).should('be.visible');
+        });
+
 });
