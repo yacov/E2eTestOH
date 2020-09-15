@@ -6,9 +6,9 @@
     "qcUsersPassword": "success",
     "eventURL": "e6712fac-f6a5-4163-89aa-ac1d011b00cb"
   },
-  "defaultCommandTimeout": 40000,
+  "defaultCommandTimeout": 70000,
   "chromeWebSecurity": false,
   "$schema": "https://on.cypress.io/cypress.schema.json",
-  "pageLoadTimeout": 50000,
+  "pageLoadTimeout": 70000,
   "projectId": "xhwbke"
 }
