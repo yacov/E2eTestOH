@@ -21,7 +21,7 @@ beforeEach(function () {
             cy.log('Should display DTA site');
             cy.visit(url + 'sreport')
             cy.server()
-            cy.route('POST', '*/api/datasources/*').as('getReports');
+            cy.route('POST', '**/api/datasources/**').as('getReports');
             cy.wait('@getReports', {timeout: 170000}, {multiple:true}).then((xhr) => {
                 expect(xhr.status).to.equal(200);
             });
@@ -93,14 +93,14 @@ beforeEach(function () {
             cy.get('#UserName').should('be.visible');*/
         });
     });
-        it.only('DTA system check on https://tx.acceliplan.com/', function () {
+        it('DTA system check on https://tx.acceliplan.com/', function () {
             var url = 'https://tx.acceliplan.com/'
             cy.manualLoginTX(url);
             /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
             cy.log('Should display DTA site');
             cy.visit(url + 'sreport')
             cy.server()
-            cy.route('GET', '*/api/dashboards/*').as('getReports');
+            cy.route('GET', '**/api/datasources/**').as('getReports');
             cy.wait('@getReports', {timeout: 170000}, {multiple:true}).then((xhr) => {
                 expect(xhr.status).to.equal(200);
             });
@@ -121,7 +121,7 @@ beforeEach(function () {
             cy.log('Should display DTA site');
             cy.visit(url + 'sreport')
             cy.server()
-            cy.route('POST', '*/api/datasources/*').as('getReports');
+            cy.route('POST', '**/api/datasources/**').as('getReports');
             cy.wait('@getReports', {timeout: 170000}, {multiple:true}).then((xhr) => {
                 expect(xhr.status).to.equal(200);
             });
