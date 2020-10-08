@@ -1,4 +1,5 @@
-const url = "http://tx-demo.accelidemo.com"
+//const url = "http://tx-demo.accelidemo.com"
+const url = Cypress.env('baseURL')
 let formLink;
 let formName;
 let appHasStarted
@@ -33,35 +34,32 @@ function spyOnAddEventListener (win) {
 beforeEach(function () {
     cy.server()
     cy.route('POST', '**/plan/Events/ViewForm/**').as('openPage');
-    cy.route('POST', '**/plan/Events/UpdateForm/**').as('savePage');
+    cy.route('POST', '**/Events/UpdateForm/**').as('savePage');
     cy.route('POST', '**/Events/GetEventOverview').as('openEvent');
-    cy.fixture('pages')
-        .then((pages) => {
-            this.pages = pages
-        });
-
-
 });
 
 describe('Fill Annual meeting Forms on  ' + url, function () {
 
 
-    it.only('Enter into created event', function () {
-        cy.txDemoLogin(url);
+    it('Enter into created event', function () {
+        if(url.includes('demo'))
+         {cy.txDemoLogin(url); }
+        if(url.includes('qc'))
+        {cy.txqclLogin(url); }
+
         cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
         cy.log('Open created Annual event');
        cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL')+ '#PresentLevels',{onBeforeLoad: spyOnAddEventListener
         }).then(waitForAppStart);
      //   cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL')+ '#PresentLevels');
-       /* cy.wait('@openPage', {timeout: 270000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });*/
+        cy.wait(5000);
+
     });
 
 
 
-    it.only('Fill Present Levels', function () {
+    it('Fill Present Levels', function () {
      //   cy.get('a[title=\'Present Levels\']').click();
      /*  cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -77,14 +75,14 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         cy.get('.StudentIsYoungerThan18WithAppropriateParentalInvolvement label span').contains('Yes').click({force: true});
         cy.log('Should save Form changes');
         cy.get('a#btnUpdateForm').click();
-        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+       /* cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
-        });
+        });*/
     });
 
 
-    it.only('Fill Curriculum and Learning Form', function () {
-        cy.get('[title=\'Curriculum and Learning Environment\'] span.caption').click();
+    it.skip('Fill Curriculum and Learning Form', function () {
+        cy.get('[title=\'Curriculum and Learning Environment\'] .k-link span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
@@ -109,7 +107,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         });
     });
 
-    it('Fill Social or Emotional Behavior Form', function () {
+    it.skip('Fill Social or Emotional Behavior Form', function () {
         cy.get('[title=\'Curriculum and Learning Environment\'] span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -132,7 +130,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         });
     });
 
-    it('Fill Independent Functioning Form', function () {
+    it.skip('Fill Independent Functioning Form', function () {
         cy.get('[title=\'Independent Functioning\'] span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -156,7 +154,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         });
     });
 
-    it('Fill Health Care Form', function () {
+    it.skip('Fill Health Care Form', function () {
         cy.get('[title=\'Health Care\'] span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -181,7 +179,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         });
     });
 
-    it('Fill Communication Form', function () {
+    it.skip('Fill Communication Form', function () {
         cy.get('[title=\'Communication\'] span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -206,7 +204,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         });
     });
 
-    it('Fill Assistive Technology Needs Form', function () {
+    it.skip('Fill Assistive Technology Needs Form', function () {
         formName = 'Assistive Technology Needs';
         //cy.get(`a.row-link[title='${formName}']`).click();
         // cy.get(`.event-name span`).contains(formName).click({force: true});
@@ -355,18 +353,14 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
             expect(xhr.status).to.equal(200);
         });
 
-        cy.get('.YesNoStudentConsideredForTelpas label span').contains('Yes').click({force: true});
-        cy.get('select[field-key=\'NameAndPositionOfPerson\'] option').last().invoke('val').then((val) => {
-            cy.get('select[field-key=\'NameAndPositionOfPerson\']').select(val, {force: true});
-        });
-
-        cy.get('.IsStudentIdentifiedAsLEP label span').contains('Yes').click({force: true});
-        cy.get('.DoesStudentHaveCognitiveDisability label span').contains('Yes').click({force: true});
-        cy.get('input[field-key=\'JustificationFIEIntellectualAndAdaptiveEvaluation\']').type('TEXT TEST', {force: true});
-        cy.get('.DoesStudentRequireIntensiveIndividualizedInstruction label span').contains('Yes').click({force: true});
-        cy.get('[field-key=\'FourthArticleJustificationFromIEPProgressMonitoringAndFIE\']').type('TEXT TEST', {force: true});
-        cy.get('.IsAssessmentDeterminationBasedOnNotExtenuatingFactorsRadio label span').contains('Yes').click({force: true});
-        cy.get('input[field-key=\'SixthArticleJustificationFromIEPProgressMonitoringAndFIE\']').type('TEXT TEST', {force: true});
+        cy.get('.IsLEPStudentWhoInGradesK12 label span').contains('Yes').click({force: true});
+        cy.get('select[field-key=\'ReadingParticipation\']').select('TELPAS',{force:true});
+        cy.get('[field-key=\'SpeakingParticipation\']').select('TELPAS',{force:true});
+        cy.get('[field-key=\'WritingParticipation\']').select('TELPAS',{force:true});
+        cy.get('[field-key=\'ListeningParticipation\']').select('TELPAS',{force:true});
+cy.get('.StudentRequiresBrailleVersionWhichIsNotYetAvailable label').click({force: true});
+cy.get('.StudentHasUniqueCircumstances label').click({force: true});
+cy.get('[field-key=\'StudentHasUniqueCrcumstancesExplain\']').type('TEXT TEST',{force:true});
 
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
