@@ -1,6 +1,40 @@
-const url = "https://tx.acceliqc.com"
+const url = "http://tx-demo.accelidemo.com"
+let formLink;
+let formName;
+let appHasStarted
 
+function waitForAppStart() {
+    // keeps rechecking "appHasStarted" variable
+    return new Cypress.Promise((resolve, reject) => {
+        const isReady = () => {
+            if (appHasStarted) {
+                return resolve()
+            }
+            setTimeout(isReady, 0)
+        }
+        isReady()
+    })
+}
+
+function spyOnAddEventListener (win) {
+    // win = window object in our application
+    const addListener = win.EventTarget.prototype.addEventListener
+    win.EventTarget.prototype.addEventListener = function (name) {
+        if (name === 'change') {
+            // web app added an event listener to the input box -
+            // that means the web application has started
+            appHasStarted = true
+            // restore the original event listener
+            win.EventTarget.prototype.addEventListener = addListener
+        }
+        return addListener.apply(this, arguments)
+    }
+}
 beforeEach(function () {
+    cy.server()
+    cy.route('POST', '**/plan/Events/ViewForm/**').as('openPage');
+    cy.route('POST', '**/plan/Events/UpdateForm/**').as('savePage');
+    cy.route('POST', '**/Events/GetEventOverview').as('openEvent');
     cy.fixture('pages')
         .then((pages) => {
             this.pages = pages
@@ -10,21 +44,34 @@ beforeEach(function () {
 });
 
 describe('Fill Annual meeting Forms on  ' + url, function () {
-    cy.server()
-    cy.route('POST', '**/plan/Events/ViewForm/**').as('openPage');
-    cy.route('POST', '**/plan/Events/UpdateForm/**').as('savePage');
-    it('Ener into created event', function () {
-        cy.txqclLogin(url);
+
+
+    it.only('Enter into created event', function () {
+        cy.txDemoLogin(url);
         cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
         cy.log('Open created Annual event');
-        cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL'));
-    });
-    it('Fill Present Levels', function () {
-        cy.get('span[data-sectionname=\'Present Levels\']').click();
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
+       cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL')+ '#PresentLevels',{onBeforeLoad: spyOnAddEventListener
+        }).then(waitForAppStart);
+     //   cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL')+ '#PresentLevels');
+       /* cy.wait('@openPage', {timeout: 270000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
-        });
+        });*/
+    });
+
+
+
+    it.only('Fill Present Levels', function () {
+     //   cy.get('a[title=\'Present Levels\']').click();
+     /*  cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });*/
+        formName = 'Present Levels';
+       // cy.get(`[data-title=\'${formName}\'] span a.k-link`).invoke('attr', 'href').then(href => {
+         //   formLink = href.toString();
+           // cy.log('link is '+formLink);
+        //});
+        //cy.visit(url + formLink);
         cy.get('[field-title=\'Review of previous IEP, including status update(s)\']').click({force: true});
         cy.get('[field-title=\'General Ed Teacher(s)\']').click({force: true});
         cy.get('.StudentIsYoungerThan18WithAppropriateParentalInvolvement label span').contains('Yes').click({force: true});
@@ -34,7 +81,9 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
             expect(xhr.status).to.equal(200);
         });
     });
-    it('Fill Curriculum and Learning Form', function () {
+
+
+    it.only('Fill Curriculum and Learning Form', function () {
         cy.get('[title=\'Curriculum and Learning Environment\'] span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -59,6 +108,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
             expect(xhr.status).to.equal(200);
         });
     });
+
     it('Fill Social or Emotional Behavior Form', function () {
         cy.get('[title=\'Curriculum and Learning Environment\'] span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
@@ -81,6 +131,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
             expect(xhr.status).to.equal(200);
         });
     });
+
     it('Fill Independent Functioning Form', function () {
         cy.get('[title=\'Independent Functioning\'] span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
@@ -154,23 +205,29 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
             expect(xhr.status).to.equal(200);
         });
     });
-    it('Fill Data Form', function () {
-        cy.get('span[data-sectionname=\'ARD Data\']').click();
-
-        cy.get('a#btnUpdateForm').click();
-        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
-    });
 
     it('Fill Assistive Technology Needs Form', function () {
-        cy.get('span[data-sectionname=\'Assistive Technology Needs\']').click();
+        formName = 'Assistive Technology Needs';
+        //cy.get(`a.row-link[title='${formName}']`).click();
+        // cy.get(`.event-name span`).contains(formName).click({force: true});
+        formLink = cy.get(`[data-title=\'${formName}\'] span a.k-link`).invoke('attr', 'href').toString();
+        cy.visit(url + formLink);
+        //cy.visit(url + formLink);
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
         cy.get('[data-abbreviation=\'AT=Yes\'][field-key=\'RadioATYesNo\']').click({force: true});
         cy.get('span.CheckboxThestudent label').click({force: true});
         cy.get('[data-bind=\'value: TextExplain\']').type('test text');
+        cy.get('a#btnUpdateForm').click();
+        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+    });
+
+    it('Fill Data Form', function () {
+        cy.get('span[data-sectionname=\'ARD Data\']').click();
+
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -242,25 +299,75 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
-       cy.get('select[field-key=\'CurrentYearGrade\']').select('11',{force:true});
- cy.get('select[field-key=\'CurrentYearDropDown\'] option').eq(-1).invoke('val').then((val)=>{
-             cy.get('select[field-key=\'CurrentYearDropDown\']').select(val);
-             });
- cy.get('select[field-key=\'FirstAlgebraIDropDown\']').select('Asylee/Refugee Exemption',{force:true});
-cy.get('select[field-key=\'FirstAlgebraIIDropDown\']').select('Passed',{force:true});
-cy.get('select[field-key=\'FirstBiologyDropDown\']').select('N/A',{force:true});
-cy.get('select[field-key=\'FirstEnglishIDropDown\']').select('Passed',{force:true});
-cy.get('select[field-key=\'FirstEnglishIIDropDown\']').select('Passed',{force:true});
-cy.get('select[field-key=\'FirstEnglishIIIDropDown\']').select('STAAR',{force:true});
-cy.get('select[field-key=\'FirstUSHistoryDropDown\']').select('STAAR Oline',{force:true});
-cy.get('select[field-key=\'FutureYearGrade\']').select('12',{force:true});
-cy.get('select[field-key=\'SecondAlgebraIDropDown\']').select('Asylee/Refugee Exemption',{force:true});
-cy.get('select[field-key=\'SecondAlgebraIIDropDown\']').select('N/A',{force:true});
-cy.get('select[field-key=\'SecondBiologyDropDown\']').select('STAAR',{force:true});
-cy.get('select[field-key=\'SecondEnglishIDropDown\']').select('Retake Not Required',{force:true});
-cy.get('select[field-key=\'SecondEnglishIIDropDown\']').select('STAAR Online',{force:true});
-        cy.get('select[field-key=\'SecondEnglishIIIDropDown\']').select('Retake Not Required',{force:true});
-        cy.get('select[field-key=\'SecondUSHistoryDropDown\']').select('STAAR Online',{force:true});
+        cy.get('select[field-key=\'CurrentYearGrade\']').select('11', {force: true});
+        cy.get('select[field-key=\'CurrentYearDropDown\'] option').eq(-1).invoke('val').then((val) => {
+            cy.get('select[field-key=\'CurrentYearDropDown\']').select(val);
+        });
+        cy.get('select[field-key=\'FirstAlgebraIDropDown\']').select('Asylee/Refugee Exemption', {force: true});
+        cy.get('select[field-key=\'FirstAlgebraIIDropDown\']').select('Passed', {force: true});
+        cy.get('select[field-key=\'FirstBiologyDropDown\']').select('N/A', {force: true});
+        cy.get('select[field-key=\'FirstEnglishIDropDown\']').select('Passed', {force: true});
+        cy.get('select[field-key=\'FirstEnglishIIDropDown\']').select('Passed', {force: true});
+        cy.get('select[field-key=\'FirstEnglishIIIDropDown\']').select('STAAR', {force: true});
+        cy.get('select[field-key=\'FirstUSHistoryDropDown\']').select('STAAR Oline', {force: true});
+        cy.get('select[field-key=\'FutureYearGrade\']').select('12', {force: true});
+        cy.get('select[field-key=\'SecondAlgebraIDropDown\']').select('Asylee/Refugee Exemption', {force: true});
+        cy.get('select[field-key=\'SecondAlgebraIIDropDown\']').select('N/A', {force: true});
+        cy.get('select[field-key=\'SecondBiologyDropDown\']').select('STAAR', {force: true});
+        cy.get('select[field-key=\'SecondEnglishIDropDown\']').select('Retake Not Required', {force: true});
+        cy.get('select[field-key=\'SecondEnglishIIDropDown\']').select('STAAR Online', {force: true});
+        cy.get('select[field-key=\'SecondEnglishIIIDropDown\']').select('Retake Not Required', {force: true});
+        cy.get('select[field-key=\'SecondUSHistoryDropDown\']').select('STAAR Online', {force: true});
+        cy.get('a#btnUpdateForm').click();
+        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+    });
+
+    it('Fill TELPAS Alternate Participation Requirements Form', function () {
+        cy.get('span[data-sectionname=\'TELPAS Alternate Participation Requirements\']').click();
+        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+
+        cy.get('.YesNoStudentConsideredForTelpas label span').contains('Yes').click({force: true});
+        cy.get('select[field-key=\'NameAndPositionOfPerson\'] option').last().invoke('val').then((val) => {
+            cy.get('select[field-key=\'NameAndPositionOfPerson\']').select(val, {force: true});
+        });
+
+        cy.get('.IsStudentIdentifiedAsLEP label span').contains('Yes').click({force: true});
+        cy.get('.DoesStudentHaveCognitiveDisability label span').contains('Yes').click({force: true});
+        cy.get('input[field-key=\'JustificationFIEIntellectualAndAdaptiveEvaluation\']').type('TEXT TEST', {force: true});
+        cy.get('.DoesStudentRequireIntensiveIndividualizedInstruction label span').contains('Yes').click({force: true});
+        cy.get('[field-key=\'FourthArticleJustificationFromIEPProgressMonitoringAndFIE\']').type('TEXT TEST', {force: true});
+        cy.get('.IsAssessmentDeterminationBasedOnNotExtenuatingFactorsRadio label span').contains('Yes').click({force: true});
+        cy.get('input[field-key=\'SixthArticleJustificationFromIEPProgressMonitoringAndFIE\']').type('TEXT TEST', {force: true});
+
+        cy.get('a#btnUpdateForm').click();
+        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+    });
+
+    it('Fill TELPAS Participation Form', function () {
+        cy.get('span[data-sectionname=\'TELPAS Participation\']').click();
+        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+
+        cy.get('.YesNoStudentConsideredForTelpas label span').contains('Yes').click({force: true});
+        cy.get('select[field-key=\'NameAndPositionOfPerson\'] option').last().invoke('val').then((val) => {
+            cy.get('select[field-key=\'NameAndPositionOfPerson\']').select(val, {force: true});
+        });
+
+        cy.get('.IsStudentIdentifiedAsLEP label span').contains('Yes').click({force: true});
+        cy.get('.DoesStudentHaveCognitiveDisability label span').contains('Yes').click({force: true});
+        cy.get('input[field-key=\'JustificationFIEIntellectualAndAdaptiveEvaluation\']').type('TEXT TEST', {force: true});
+        cy.get('.DoesStudentRequireIntensiveIndividualizedInstruction label span').contains('Yes').click({force: true});
+        cy.get('[field-key=\'FourthArticleJustificationFromIEPProgressMonitoringAndFIE\']').type('TEXT TEST', {force: true});
+        cy.get('.IsAssessmentDeterminationBasedOnNotExtenuatingFactorsRadio label span').contains('Yes').click({force: true});
+        cy.get('input[field-key=\'SixthArticleJustificationFromIEPProgressMonitoringAndFIE\']').type('TEXT TEST', {force: true});
+
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);

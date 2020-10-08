@@ -79,6 +79,16 @@ Cypress.Commands.add('txqclLogin', (urll) => {
     })
 });
 
+Cypress.Commands.add('txDemoLogin', (urll) => {
+    return cy.fixture('pages').then((pages) => {
+        const loginPage = pages.loginPage;
+        cy.visit(urll + '/Login.aspx?ReturnUrl=%2fAcceliTrack/Home.aspx');
+        cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
+        cy.get(loginPage.passwordField).clear().type(Cypress.env('testUsersPassword'));
+        cy.get(loginPage.loginButton).click();
+    })
+});
+
 Cypress.Commands.add('login', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
@@ -87,4 +97,12 @@ Cypress.Commands.add('login', (urll) => {
         cy.get(loginPage.passwordField).clear().type(Cypress.env('testUsersPassword'));
         cy.get(loginPage.loginButton).click();
     })
+});
+
+Cypress.Commands.add('getFormLink', (urll) => {
+
+        const link = cy.get(`[data-title=\'${urll}\'] span a.k-link`).invoke('attr', 'href');
+    cy.log(link)
+    return link;
+
 });
