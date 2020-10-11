@@ -114,17 +114,19 @@ Cypress.Commands.add('openForm', (formFullName) => {
     return cy.fixture('forms').then((forms) => {
         for (var i = 0; i < forms.Items.length; i++) {
             if(forms.Items[i].Name === formFullName) {
+                cy.log('Form '+formFullName+' found in the list.')
                 const formdid = forms.Items[i].FormId;
                 const sectionName = forms.Items[i].EventSection;
-                const uurl = `${Cypress.env('baseURL')} + '/plan/Events/ViewEvent?eventId=' + ${Cypress.env('eventURL')} + '#' + ${sectionName} + '&formId=' + ${formdid}`
-                console.log('url of the form '+ formFullName+ 'is '+uurl);
+                const uurl = Cypress.env('baseURL') + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#' + sectionName + '&formId=' + formdid;
+                cy.log('url of the form '+ formFullName+ 'is '+uurl);
+                cy.server()
+                cy.route('POST', '**/Events/ViewForm').as('openPage');
                 cy.visit(uurl);
+                cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
+                    expect(xhr.status).to.equal(200);
+                });
             }
         }
-
-        cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
-        cy.get(loginPage.passwordField).clear().type(Cypress.env('testUsersPassword'));
-        cy.get(loginPage.loginButton).click();
     })
 });
 

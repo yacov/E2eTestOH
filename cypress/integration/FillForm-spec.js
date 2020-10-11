@@ -19,14 +19,14 @@ function waitForAppStart() {
 
 function spyOnAddEventListener (win) {
     // win = window object in our application
-    const addListener = win.EventTarget.prototype.addEventListener
-    win.EventTarget.prototype.addEventListener = function (name) {
+    const addListener = win.EventTarget.proto.clear().type.addEventListener
+    win.EventTarget.proto.clear().type.addEventListener = function (name) {
         if (name === 'change') {
             // web app added an event listener to the input box -
             // that means the web application has started
             appHasStarted = true
             // restore the original event listener
-            win.EventTarget.prototype.addEventListener = addListener
+            win.EventTarget.proto.clear().type.addEventListener = addListener
         }
         return addListener.apply(this, arguments)
     }
@@ -40,7 +40,7 @@ before(function () {
 });
 beforeEach(function () {
     cy.server()
-    cy.route('POST', '**/Events//ViewForm').as('openPage');
+    cy.route('POST', '**/Events/ViewForm').as('openPage');
     cy.route('POST', '**/Events/UpdateForm').as('savePage');
     cy.route('POST', '**/Events/GetEventOverview').as('openEvent');
    Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
@@ -49,11 +49,8 @@ beforeEach(function () {
 describe('Fill Annual meeting Forms on  ' + url, function () {
 
 
-    it.only('Enter into created event', function () {
-
-
-
-        cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
+    it('Enter into created event', function () {
+cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
         cy.log('Open created Annual event');
        cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#EventOverview',{onBeforeLoad: spyOnAddEventListener
@@ -70,46 +67,36 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
 
 
     it('Fill Present Levels', function () {
-     //   cy.get('a[title=\'Present Levels\']').click();
-     /*  cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });*/
         formName = 'Present Levels';
-       // cy.get(`[data-title=\'${formName}\'] span a.k-link`).invoke('attr', 'href').then(href => {
-         //   formLink = href.toString();
-           // cy.log('link is '+formLink);
-        //});
-        //cy.visit(url + formLink);
+        cy.openForm(formName);
         cy.get('[field-title=\'Review of previous IEP, including status update(s)\']').click({force: true});
         cy.get('[field-title=\'General Ed Teacher(s)\']').click({force: true});
         cy.get('.StudentIsYoungerThan18WithAppropriateParentalInvolvement label span').contains('Yes').click({force: true});
         cy.log('Should save Form changes');
         cy.get('a#btnUpdateForm').click();
-       /* cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
-        });*/
+        });
     });
 
 
-    it.only('Fill Curriculum and Learning Form', function () {
+    it('Fill Curriculum and Learning Form', function () {
         formName = "Curriculum and Learning Environment";
         cy.openForm(formName);
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
-        cy.get('textarea[field-title=\'Student strengths in Math\']').type('test1');
-        cy.get('textarea[field-title=\'Student strengths in Science\']').type('test2');
-        cy.get('textarea[field-title=\'Student strengths in Reading/Written Expression\']').type('test3');
-        cy.get('textarea[field-title=\'Student strengths in Social Studies\']').type('test4');
+   
+        cy.get('textarea[field-title=\'Student strengths in Math\']').clear().type('test1');
+        cy.get('textarea[field-title=\'Student strengths in Science\']').clear().type('test2');
+        cy.get('textarea[field-title=\'Student strengths in Reading/Written Expression\']').clear().type('test3');
+        cy.get('textarea[field-title=\'Student strengths in Social Studies\']').clear().type('test4');
         cy.get('.DoesDisabilityAffectInvolvement label span').contains('Yes').click({force: true});
         cy.get('label').contains('Effects of the disability in Math').click({force: true});
-        cy.get('textarea[data-bind=\'value: DomainAEffectsOfTheDisabilityInMathDescription\']').type('test11');
+        cy.get('textarea[data-bind=\'value: DomainAEffectsOfTheDisabilityInMathDescription\']').clear().type('test11');
         cy.get('label').contains('Effects of the disability in Reading/Written Expression').click({force: true});
-        cy.get('textarea[data-bind=\'value: DomainAEffectsOfTheDisabilityInReadingWrittenExpressionDescription\']').type('test22');
+        cy.get('textarea[data-bind=\'value: DomainAEffectsOfTheDisabilityInReadingWrittenExpressionDescription\']').clear().type('test22');
         cy.get('.HasTheStudentHadGoals label span').contains('Yes').click({force: true});
-        cy.get('textarea[[data-bind=\'value: HasTheStudentHadGoalsDescriptiveSentence\']').type('test text');
+        cy.get('textarea[[data-bind=\'value: HasTheStudentHadGoalsDescriptiveSentence\']').clear().type('test text');
         cy.get('.NeedAccommodationsSupports label span').contains('Yes').click({force: true});
-        cy.get('textarea[data-bind=\'value: DomainAQAAssessmentDS\']').type('test text');
+        cy.get('textarea[data-bind=\'value: DomainAQAAssessmentDS\']').clear().type('test text');
         cy.get('input[aria-owns=\'cbxPens_taglist cbxPens_listbox\']').click({force: true});
         cy.get('[name=\'pens\'] option').contains('Alt Academic & Life Skills - Academics: Math').click({force: true});
         cy.get('a#btnUpdateForm').click();
@@ -119,19 +106,17 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill Social or Emotional Behavior Form', function () {
-        cy.get('[title=\'Social or Emotional Behavior\'] span.caption').click();
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
-        cy.get('textarea[field-title=\'The strengths of the student\']').type('test text');
+        formName = "Social or Emotional Behavior";
+        cy.openForm(formName);
+        cy.get('textarea[field-title=\'The strengths of the student\']').clear().type('test text');
         cy.get('.DoesDisabilityAffectInvolvement label span').contains('Yes').click({force: true});
         cy.get('.DoesTheStudentRequireSocialCommunicationInstruction label span').contains('Yes').click({force: true});
         cy.get('.DoesTheStudentRequireSocialCommunicationInstructionLocations label span').contains('One service location').click({force: true});
-        cy.get('textarea[data-bind=\'value: DoesTheStudentRequireSocialCommunicationInstructionDS\']').type('test text');
+        cy.get('textarea[data-bind=\'value: DoesTheStudentRequireSocialCommunicationInstructionDS\']').clear().type('test text');
         cy.get('.DoesTheStudentRequireSpecialEducationCounselingServices label span').contains('Yes').click({force: true});
         cy.get('.DoesTheStudentRequireSpecialEducationCounselingServicesDirect label').click({force: true});
         cy.get('.DoesTheStudentRequireSpecialEducationCounselingServicesLocations label span').contains('One service location').click({force: true});
-        cy.get('textarea[data-bind=\'value: DoesTheStudentRequireSpecialEducationCounselingServicesDS\']').type('test22');
+        cy.get('textarea[data-bind=\'value: DoesTheStudentRequireSpecialEducationCounselingServicesDS\']').clear().type('test22');
         cy.get('input[aria-owns=\'cbxPens_taglist cbxPens_listbox\']').click({force: true});
         cy.get('[name=\'pens\'] option').contains('Autism/Related disorders - Following Directions').click({force: true});
         cy.get('[name=\'pens\'] option').contains('Autism/Related disorders - Play Skills').click({force: true});
@@ -142,19 +127,17 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill Independent Functioning Form', function () {
-        cy.get('[title=\'Independent Functioning\'] span.caption').click();
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
-        cy.get('textarea[field-title=\'The strengths of the student\']').type('test text');
+        formName = "Independent Functioning";
+        cy.openForm(formName);
+        cy.get('textarea[field-title=\'The strengths of the student\']').clear().type('test text');
         cy.get('.QDoesStudentRequireAssistiveTechnologyIndependentFunctioning label span').contains('Yes').click({force: true});
         cy.get('.EquipmentDeviceAssistiveTechnologyIndependentFunctioning label').contains('Equipment/Device').click({force: true});
-        cy.get('textarea[data-bind=\'value: DescriptiveSentenceAssistiveTechnologyIndependentFunctioning\']').type('test text');
+        cy.get('textarea[data-bind=\'value: DescriptiveSentenceAssistiveTechnologyIndependentFunctioning\']').clear().type('test text');
 
         cy.get('.DoesStudentRequireAdaptedPhysicalEducation label span').contains('Yes').click({force: true});
         cy.get('.AdaptedPhysicalEducationSpecializedInstruction label').click({force: true});
         cy.get('.AdaptedPhysicalEducationSpecializedInstructionServicesOneOrTwo label span').contains('One service location').click({force: true});
-        cy.get('textarea[data-bind=\'value: DescriptiveAdaptedPhysicalEducationSpecialized\']').type('test text');
+        cy.get('textarea[data-bind=\'value: DescriptiveAdaptedPhysicalEducationSpecialized\']').clear().type('test text');
 
         cy.get('input[aria-owns=\'cbxPens_taglist cbxPens_listbox\']').click({force: true});
         cy.get('[name=\'pens\'] option').contains('Adapted PE - Locomotor').click({force: true});
@@ -166,13 +149,11 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill Health Care Form', function () {
-        cy.get('[title=\'Health Care\'] span.caption').click();
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
+        formName = "Health Care";
+        cy.openForm(formName);
         cy.get('.DoesDisabilityAffectInvolvement label span').contains('Yes').click({force: true});
         cy.get('.HasPreviousGoals label span').contains('Yes').click({force: true});
-        cy.get('textarea[data-bind=\'value: HasPreviousGoalsDescription\']').type('testtext');
+        cy.get('textarea[data-bind=\'value: HasPreviousGoalsDescription\']').clear().type('testtext');
 
         cy.get('.RequireNursingServices label span').contains('Yes').click({force: true});
         cy.get('span.SkilledNursingServices label').click({force: true});
@@ -180,7 +161,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
 
         cy.get('.SkilledNursingServicesOneTwo label span').contains('One service location').click({force: true});
 
-        cy.get('textarea[data-bind=\'value: SkilledNursingServicesDescription\']').type('test text');
+        cy.get('textarea[data-bind=\'value: SkilledNursingServicesDescription\']').clear().type('test text');
 
         cy.get('input[aria-owns=\'cbxPens_taglist cbxPens_listbox\']').click({force: true});
         cy.get('[name=\'pens\'] option').contains('Health Related Needs').click({force: true});
@@ -191,20 +172,18 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill Communication Form', function () {
-        cy.get('[title=\'Communication\'] span.caption').click();
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
-        cy.get('textarea[field-title=\'The strengths of the student\']').type('test text');
+        formName = "Communication";
+        cy.openForm(formName);
+        cy.get('textarea[field-title=\'The strengths of the student\']').clear().type('test text');
         cy.get('.DoesDisabilityAffectInvolvement label span').contains('Yes').click({force: true});
 
         cy.get('.HasStudentHaAnyPreviousGoalsInThisDomain label span').contains('Yes').click({force: true});
-        cy.get('[data-bind=\'value: HasStudentHadAnyPreviousGoalsInThisDomainDescriptiveSentence\']').type('testtext');
+        cy.get('[data-bind=\'value: HasStudentHadAnyPreviousGoalsInThisDomainDescriptiveSentence\']').clear().type('testtext');
 
         cy.get('.DoesStudentRequireAuditoryImpairmentServices label span').contains('Yes').click({force: true});
         cy.get('.DoesStudentRequireAuditoryImpairmentServicesSpecializedInstruction label').click({force: true});
         cy.get('.SpecializedInstructionOneOrTwoServiceLocation label span').contains('One service location').click({force: true});
-        cy.get('[data-bind=\'value: DoesStudentRequireAuditoryImpairmentServicesDescriptiveSentence\']').type('test text');
+        cy.get('[data-bind=\'value: DoesStudentRequireAuditoryImpairmentServicesDescriptiveSentence\']').clear().type('test text');
 
         cy.get('input[aria-owns=\'cbxPens_taglist cbxPens_listbox\']').click({force: true});
         cy.get('[name=\'pens\'] option').contains('Alt Academic & Life Skills - Self Expression').click({force: true});
@@ -217,41 +196,26 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
 
     it('Fill Assistive Technology Needs Form', function () {
         formName = 'Assistive Technology Needs';
-
-        //cy.get(`a.row-link[title='${formName}']`).click();
-        // cy.get(`.event-name span`).contains(formName).click({force: true});
-        formLink = cy.get(`[data-title=\'${formName}\'] span a.k-link`).invoke('attr', 'href').toString();
-        cy.log(formLink);
-        cy.visit(url + formLink);
-        //cy.visit(url + formLink);
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
+        cy.openForm(formName);
         cy.get('[data-abbreviation=\'AT=Yes\'][field-key=\'RadioATYesNo\']').click({force: true});
         cy.get('span.CheckboxThestudent label').click({force: true});
-        cy.get('[data-bind=\'value: TextExplain\']').type('test text');
+        cy.get('[data-bind=\'value: TextExplain\']').clear().type('test text');
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
     });
 
-    it('Fill Data Form', function () {
-        cy.get('span[data-sectionname=\'ARD Data\']').invoke('removeAttr', 'target').click({force: true});
-
-       // cy.get('a#btnUpdateForm').click();
-       /* cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });*/
+    it('Fill ARD Data Form', function () {
+        formName = 'ARD Data';
+        cy.openForm(formName);
     });
 
     it('Fill Assistive Technology Form', function () {
-        cy.get('[data-section-type=\'AssistiveTechnology\'] span a').invoke('removeAttr', 'target').click({force: true});
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
+        formName = 'Assistive Technology';
+        cy.openForm(formName);
         cy.get('a#btnAddAccommodations').click();
-        cy.get('[aria-owns=\'TypeId_listbox\']').click({force: true});
+        cy.get('[aria-owns=\'.clear().typeId_listbox\']').click({force: true});
         cy.get('span.k-input').contains('High Tech').click({force: true});
         cy.get('select#NameId').select('Amplification Devices: Hearing Assistive Technology', {force: true});
         cy.get('select#SubjectIds').select('Athletics', {force: true});
@@ -260,18 +224,16 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         cy.get('a.k-nav-today').click({force: true});
         cy.get('span[aria-controls=\'EndDate_dateview\']').click();
         cy.get('a.k-nav-today').click({force: true});
-        cy.get('a#btnSaveAccommodation.k-button[type=\'submit\']');
+        cy.get('a#btnSaveAccommodation.k-button[.clear().type=\'submit\']');
     });
 
     it('Fill Physical Fitness Assessment Form', function () {
-        cy.get('span[data-sectionname=\'Physical Fitness Assessment\']').invoke('removeAttr', 'target').click({force: true});
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
+        formName = 'Physical Fitness Assessment';
+        cy.openForm(formName);
         cy.get('.RadioBrFHBsFIItJwEJAGsttuvGAHrJwtJGwF label span').contains('Yes').click({force: true});
         cy.get('input[field-key=\'CheckboxECAtJAwDFttwEEIDsDsuFGsAwtAHDHuD\']').check({force: true});
         cy.get('input[field-key=\'CheckboxJGrrJuCtuwBuEvrrIJArJFvHIuAAAuFJ\']').check({force: true});
-        cy.getIframeBody().type('TEST TEXT', {force: true});
+        cy.getIframeBody().clear().type('TEST TEXT', {force: true});
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -279,10 +241,8 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill STAAR Alternate 2 Participation Requirements Form', function () {
-        cy.get('span[data-sectionname=\'STAAR Alternate 2 Participation Requirements\']').invoke('removeAttr', 'target').click({force: true});
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
+        formName = 'STAAR Alternate 2 Participation Requirements';
+        cy.openForm(formName);
         cy.get('.IsStudentConsiderStaarAlt label span').contains('Yes').click({force: true});
         cy.get('span.NameAndPositionOfPerson').click();
         cy.get('select[field-key=\'NameAndPositionOfPerson\'][data-bind=\'value: NameAndPositionOfPerson\'] option').last().invoke('val').then((val) => {
@@ -293,11 +253,11 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
 
         cy.get('.IsStudentConsiderStaarAlt label span').contains('Yes').click({force: true});
         cy.get('.DoesTheStudentHaveSignificantCognitiveDisability label span').contains('Yes').click({force: true});
-        cy.get('textarea[field-key=\'JustificationByIntellectualAndAdaptive\']').type('TEXT TEST');
+        cy.get('textarea[field-key=\'JustificationByIntellectualAndAdaptive\']').clear().type('TEXT TEST');
         cy.get('.DoesTheStudentRequireIntensiveInstruction label span').contains('Yes').click({force: true});
-        cy.get('textarea[field-key=\'JustificationMustIncludeIEPProgressMonitoring\']').type('TEXT TEST', {force: true});
+        cy.get('textarea[field-key=\'JustificationMustIncludeIEPProgressMonitoring\']').clear().type('TEXT TEST', {force: true});
         cy.get('.IsAssessmentBasedOnCognitiveDisability label span').contains('Yes').click({force: true});
-        cy.get('textarea[field-key=\'JustificationMustIncludeIEPQuestion5\']').type('TEXT TEST', {force: true});
+        cy.get('textarea[field-key=\'JustificationMustIncludeIEPQuestion5\']').clear().type('TEXT TEST', {force: true});
 
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
@@ -306,10 +266,8 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill STAAR Participation Form', function () {
-        cy.get('span[data-sectionname=\'STAAR Participation\']').invoke('removeAttr', 'target').click({force: true});
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
+        formName = 'STAAR Participation';
+        cy.openForm(formName);
         cy.get('select[field-key=\'CurrentYearGrade\']').select('11', {force: true});
         cy.get('select[field-key=\'CurrentYearDropDown\'] option').eq(-1).invoke('val').then((val) => {
             cy.get('select[field-key=\'CurrentYearDropDown\']').select(val);
@@ -336,10 +294,8 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill TELPAS Alternate Participation Requirements Form', function () {
-        cy.get('span[data-sectionname=\'TELPAS Alternate Participation Requirements\']').invoke('removeAttr', 'target').click({force: true});
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });
+        formName = 'TELPAS Alternate Participation Requirements';
+        cy.openForm(formName);
 
         cy.get('.YesNoStudentConsideredForTelpas label span').contains('Yes').click({force: true});
         cy.get('select[field-key=\'NameAndPositionOfPerson\'] option').last().invoke('val').then((val) => {
@@ -348,11 +304,11 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
 
         cy.get('.IsStudentIdentifiedAsLEP label span').contains('Yes').click({force: true});
         cy.get('.DoesStudentHaveCognitiveDisability label span').contains('Yes').click({force: true});
-        cy.get('input[field-key=\'JustificationFIEIntellectualAndAdaptiveEvaluation\']').type('TEXT TEST', {force: true});
+        cy.get('input[field-key=\'JustificationFIEIntellectualAndAdaptiveEvaluation\']').clear().type('TEXT TEST', {force: true});
         cy.get('.DoesStudentRequireIntensiveIndividualizedInstruction label span').contains('Yes').click({force: true});
-        cy.get('[field-key=\'FourthArticleJustificationFromIEPProgressMonitoringAndFIE\']').type('TEXT TEST', {force: true});
+        cy.get('[field-key=\'FourthArticleJustificationFromIEPProgressMonitoringAndFIE\']').clear().type('TEXT TEST', {force: true});
         cy.get('.IsAssessmentDeterminationBasedOnNotExtenuatingFactorsRadio label span').contains('Yes').click({force: true});
-        cy.get('input[field-key=\'SixthArticleJustificationFromIEPProgressMonitoringAndFIE\']').type('TEXT TEST', {force: true});
+        cy.get('input[field-key=\'SixthArticleJustificationFromIEPProgressMonitoringAndFIE\']').clear().type('TEXT TEST', {force: true});
 
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
@@ -361,10 +317,8 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill TELPAS Participation Form', function () {
-        cy.get('span[data-sectionname=\'TELPAS Participation\']').invoke('removeAttr', 'target').click({force: true});
-       /* cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
-            expect(xhr.status).to.equal(200);
-        });*/
+        formName = 'TELPAS Participation';
+        cy.openForm(formName);
 
         cy.get('.IsLEPStudentWhoInGradesK12 label span',{timeout:80000}).contains('Yes').click({force: true});
         cy.get('select[field-key=\'ReadingParticipation\']').select('TELPAS',{force:true});
@@ -373,7 +327,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         cy.get('[field-key=\'ListeningParticipation\']').select('TELPAS',{force:true});
 cy.get('.StudentRequiresBrailleVersionWhichIsNotYetAvailable label').click({force: true});
 cy.get('.StudentHasUniqueCircumstances label').click({force: true});
-cy.get('[field-key=\'StudentHasUniqueCrcumstancesExplain\']').type('TEXT TEST',{force:true});
+cy.get('[field-key=\'StudentHasUniqueCrcumstancesExplain\']').clear().type('TEXT TEST',{force:true});
 
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
