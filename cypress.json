@@ -4,9 +4,9 @@
     "testUserName": "Superlion",
     "testUsersPassword": "CTAKAH613777",
     "qcUsersPassword": "success",
-    "eventURL": "dea4ba0d-a68d-4f7f-85c6-ac4e00ac16ff",
+    "eventURL": "be30912e-bbec-44ce-88bb-ac5100717774",
     "eventURL2": "9f840a70-08b5-49a6-98b1-ac4e007c03f2",
-    "baseURL": "https://tx.acceliqc.com/"
+    "baseURL": "https://tx.acceliqc.com"
   },
   "defaultCommandTimeout": 70000,
   "chromeWebSecurity": false,

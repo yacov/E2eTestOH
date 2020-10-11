@@ -1,5 +1,6 @@
 
 const urls = ["https://dc.acceliplan.com/", "https://washoe.acceliplan.com/","https://broward.acceliplan.com/","https://santa-rosa.acceliplan.com/"];
+let urll;
 let spy;
 let schoolName1;
 let schoolName2;
@@ -94,14 +95,14 @@ beforeEach(function () {
         });
     });
         it('DTA system check on https://tx.acceliplan.com/', function () {
-            var url = 'https://tx.acceliplan.com/'
-            cy.manualLoginTX(url);
+             urll = 'https://tx.acceliplan.com/'
+            cy.manualLoginTX(urll);
             /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
             cy.log('Should display DTA site');
-            cy.visit(url + 'sreport')
+            cy.visit(urll + 'sreport')
             cy.server()
-            cy.route('GET', '**/api/datasources/**').as('getReports');
-            cy.wait('@getReports', {timeout: 170000}, {multiple:true}).then((xhr) => {
+            cy.route('GET', '**/datasources/**/jaql').as('getReports');
+            cy.wait('@getReports', {timeout: 50000}, {multiple:true}).then((xhr) => {
                 expect(xhr.status).to.equal(200);
             });
             //cy.get('.toolbox-min-user div').contains('Dashboards', {timeout: 270000}).should('be.visible');
@@ -114,15 +115,15 @@ beforeEach(function () {
             cy.log('Should display Filters');
           //  cy.get('.toolbox-min-menu').contains('Filters', {timeout: 170000}).should('be.visible');
         });
-        it('DTA system check on https://dade.acceliplan.com/', function () {
-            var url = 'https://dade.acceliplan.com/'
-                cy.manualLogin(url);
+        it.only('DTA system check on https://dade.acceliplan.com/', function () {
+             urll = 'https://dade.acceliplan.com/'
+                cy.manualLogin(urll);
             /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
             cy.log('Should display DTA site');
-            cy.visit(url + 'sreport')
+            cy.visit(urll + 'sreport')
             cy.server()
-            cy.route('POST', '**/api/datasources/**').as('getReports');
-            cy.wait('@getReports', {timeout: 170000}, {multiple:true}).then((xhr) => {
+            cy.route('POST', '**/api/datasources/**/jaql').as('getReports');
+            cy.wait('@getReports', {timeout: 60000}).then((xhr) => {
                 expect(xhr.status).to.equal(200);
             });
             cy.get('.toolbox-min-user div').contains('Dashboards', {timeout: 170000}).should('be.visible');

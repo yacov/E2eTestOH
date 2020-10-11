@@ -23,6 +23,8 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+
 Cypress.Commands.add('manualLogin', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
@@ -89,10 +91,37 @@ Cypress.Commands.add('txDemoLogin', (urll) => {
     })
 });
 
+
+Cypress.Commands.add('loginif', () => {
+    if(cy.url().contains('login.aspx')){
+        cy.get('#UserName').clear().type(Cypress.env('testUserName'));
+        cy.get('#Password').clear().type(Cypress.env('testUsersPassword'));
+        cy.get('#lnkLogin').click();
+    }
+});
+
 Cypress.Commands.add('login', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
         cy.visit(urll + '/Login.aspx');
+        cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
+        cy.get(loginPage.passwordField).clear().type(Cypress.env('testUsersPassword'));
+        cy.get(loginPage.loginButton).click();
+    })
+});
+
+Cypress.Commands.add('openForm', (formFullName) => {
+    return cy.fixture('forms').then((forms) => {
+        for (var i = 0; i < forms.Items.length; i++) {
+            if(forms.Items[i].Name === formFullName) {
+                const formdid = forms.Items[i].FormId;
+                const sectionName = forms.Items[i].EventSection;
+                const uurl = `${Cypress.env('baseURL')} + '/plan/Events/ViewEvent?eventId=' + ${Cypress.env('eventURL')} + '#' + ${sectionName} + '&formId=' + ${formdid}`
+                console.log('url of the form '+ formFullName+ 'is '+uurl);
+                cy.visit(uurl);
+            }
+        }
+
         cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
         cy.get(loginPage.passwordField).clear().type(Cypress.env('testUsersPassword'));
         cy.get(loginPage.loginButton).click();

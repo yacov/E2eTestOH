@@ -31,28 +31,38 @@ function spyOnAddEventListener (win) {
         return addListener.apply(this, arguments)
     }
 }
+before(function () {
+    if(url.includes('demo'))
+    {cy.txDemoLogin(url); }
+    if(url.includes('qc'))
+    {cy.txqclLogin(url); }
+    Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
+});
 beforeEach(function () {
     cy.server()
-    cy.route('POST', '**/plan/Events/ViewForm/**').as('openPage');
-    cy.route('POST', '**/Events/UpdateForm/**').as('savePage');
+    cy.route('POST', '**/Events//ViewForm').as('openPage');
+    cy.route('POST', '**/Events/UpdateForm').as('savePage');
     cy.route('POST', '**/Events/GetEventOverview').as('openEvent');
+   Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
 });
 
 describe('Fill Annual meeting Forms on  ' + url, function () {
 
 
-    it('Enter into created event', function () {
-        if(url.includes('demo'))
-         {cy.txDemoLogin(url); }
-        if(url.includes('qc'))
-        {cy.txqclLogin(url); }
+    it.only('Enter into created event', function () {
+
+
 
         cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
         cy.log('Open created Annual event');
-       cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL')+ '#PresentLevels',{onBeforeLoad: spyOnAddEventListener
+       cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#EventOverview',{onBeforeLoad: spyOnAddEventListener
         }).then(waitForAppStart);
-     //   cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL')+ '#PresentLevels');
+        cy.wait('@openEvent', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+            cy.writeFile('cypress/fixtures/forms.json', xhr.responseBody)
+        });
+     //  cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL')+ '#PresentLevels');
         cy.wait(5000);
 
     });
@@ -81,8 +91,9 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
 
-    it.skip('Fill Curriculum and Learning Form', function () {
-        cy.get('[title=\'Curriculum and Learning Environment\'] .k-link span.caption').click();
+    it.only('Fill Curriculum and Learning Form', function () {
+        formName = "Curriculum and Learning Environment";
+        cy.openForm(formName);
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
@@ -107,8 +118,8 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         });
     });
 
-    it.skip('Fill Social or Emotional Behavior Form', function () {
-        cy.get('[title=\'Curriculum and Learning Environment\'] span.caption').click();
+    it('Fill Social or Emotional Behavior Form', function () {
+        cy.get('[title=\'Social or Emotional Behavior\'] span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
@@ -130,7 +141,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         });
     });
 
-    it.skip('Fill Independent Functioning Form', function () {
+    it('Fill Independent Functioning Form', function () {
         cy.get('[title=\'Independent Functioning\'] span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -154,7 +165,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         });
     });
 
-    it.skip('Fill Health Care Form', function () {
+    it('Fill Health Care Form', function () {
         cy.get('[title=\'Health Care\'] span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -179,7 +190,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         });
     });
 
-    it.skip('Fill Communication Form', function () {
+    it('Fill Communication Form', function () {
         cy.get('[title=\'Communication\'] span.caption').click();
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -204,11 +215,13 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         });
     });
 
-    it.skip('Fill Assistive Technology Needs Form', function () {
+    it('Fill Assistive Technology Needs Form', function () {
         formName = 'Assistive Technology Needs';
+
         //cy.get(`a.row-link[title='${formName}']`).click();
         // cy.get(`.event-name span`).contains(formName).click({force: true});
         formLink = cy.get(`[data-title=\'${formName}\'] span a.k-link`).invoke('attr', 'href').toString();
+        cy.log(formLink);
         cy.visit(url + formLink);
         //cy.visit(url + formLink);
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
@@ -224,16 +237,16 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill Data Form', function () {
-        cy.get('span[data-sectionname=\'ARD Data\']').click();
+        cy.get('span[data-sectionname=\'ARD Data\']').invoke('removeAttr', 'target').click({force: true});
 
-        cy.get('a#btnUpdateForm').click();
-        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+       // cy.get('a#btnUpdateForm').click();
+       /* cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
-        });
+        });*/
     });
 
     it('Fill Assistive Technology Form', function () {
-        cy.get('span[data-sectionname=\'Assistive Technology\']').click();
+        cy.get('[data-section-type=\'AssistiveTechnology\'] span a').invoke('removeAttr', 'target').click({force: true});
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
@@ -251,7 +264,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill Physical Fitness Assessment Form', function () {
-        cy.get('span[data-sectionname=\'Physical Fitness Assessment\']').click();
+        cy.get('span[data-sectionname=\'Physical Fitness Assessment\']').invoke('removeAttr', 'target').click({force: true});
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
@@ -266,7 +279,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill STAAR Alternate 2 Participation Requirements Form', function () {
-        cy.get('span[data-sectionname=\'STAAR Alternate 2 Participation Requirements\']').click();
+        cy.get('span[data-sectionname=\'STAAR Alternate 2 Participation Requirements\']').invoke('removeAttr', 'target').click({force: true});
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
@@ -293,7 +306,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill STAAR Participation Form', function () {
-        cy.get('span[data-sectionname=\'STAAR Participation\']').click();
+        cy.get('span[data-sectionname=\'STAAR Participation\']').invoke('removeAttr', 'target').click({force: true});
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
@@ -323,7 +336,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill TELPAS Alternate Participation Requirements Form', function () {
-        cy.get('span[data-sectionname=\'TELPAS Alternate Participation Requirements\']').click();
+        cy.get('span[data-sectionname=\'TELPAS Alternate Participation Requirements\']').invoke('removeAttr', 'target').click({force: true});
         cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
@@ -348,12 +361,12 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
     });
 
     it('Fill TELPAS Participation Form', function () {
-        cy.get('span[data-sectionname=\'TELPAS Participation\']').click();
-        cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
+        cy.get('span[data-sectionname=\'TELPAS Participation\']').invoke('removeAttr', 'target').click({force: true});
+       /* cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
-        });
+        });*/
 
-        cy.get('.IsLEPStudentWhoInGradesK12 label span').contains('Yes').click({force: true});
+        cy.get('.IsLEPStudentWhoInGradesK12 label span',{timeout:80000}).contains('Yes').click({force: true});
         cy.get('select[field-key=\'ReadingParticipation\']').select('TELPAS',{force:true});
         cy.get('[field-key=\'SpeakingParticipation\']').select('TELPAS',{force:true});
         cy.get('[field-key=\'WritingParticipation\']').select('TELPAS',{force:true});
