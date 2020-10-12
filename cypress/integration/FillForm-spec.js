@@ -95,7 +95,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         cy.get('label').contains('Effects of the disability in Reading/Written Expression').click({force: true});
         cy.get('textarea[data-bind=\'value: DomainAEffectsOfTheDisabilityInReadingWrittenExpressionDescription\']').clear().type('test22');
         cy.get('.HasTheStudentHadGoals label span').contains('Yes').click({force: true});
-        cy.get('textarea[[data-bind=\'value: HasTheStudentHadGoalsDescriptiveSentence\']').clear().type('test text');
+        cy.get('textarea[data-bind=\'value: HasTheStudentHadGoalsDescriptiveSentence\']').clear().type('test text');
         cy.get('.NeedAccommodationsSupports label span').contains('Yes').click({force: true});
         cy.get('textarea[data-bind=\'value: DomainAQAAssessmentDS\']').clear().type('test text');
         cy.get('input[aria-owns=\'cbxPens_taglist cbxPens_listbox\']').click({force: true});
