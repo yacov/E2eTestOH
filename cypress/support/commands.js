@@ -122,7 +122,7 @@ Cypress.Commands.add('openForm', (formFullName) => {
                 cy.server()
                 cy.route('POST', '**/Events/ViewForm').as('openPage');
                 cy.visit(uurl);
-                cy.wait('@openPage', {timeout: 170000}).then((xhr) => {
+                cy.wait('@openPage', {timeout: 270000}).then((xhr) => {
                     expect(xhr.status).to.equal(200);
                 });
             }

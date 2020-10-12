@@ -19,14 +19,14 @@ function waitForAppStart() {
 
 function spyOnAddEventListener (win) {
     // win = window object in our application
-    const addListener = win.EventTarget.proto.clear().type.addEventListener
-    win.EventTarget.proto.clear().type.addEventListener = function (name) {
+    const addListener = win.EventTarget.prototype.addEventListener
+    win.EventTarget.prototype.addEventListener = function (name) {
         if (name === 'change') {
             // web app added an event listener to the input box -
             // that means the web application has started
             appHasStarted = true
             // restore the original event listener
-            win.EventTarget.proto.clear().type.addEventListener = addListener
+            win.EventTarget.prototype.addEventListener = addListener
         }
         return addListener.apply(this, arguments)
     }
@@ -46,8 +46,11 @@ beforeEach(function () {
    Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
 });
 
-describe('Fill Annual meeting Forms on  ' + url, function () {
+after(function (){
+    cy.writeFile('cypress/fixtures/forms.json', '{}')
+})
 
+describe('Fill Annual meeting Forms on  ' + url, function () {
 
     it('Enter into created event', function () {
 cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
@@ -64,8 +67,6 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     });
 
-
-
     it('Fill Present Levels', function () {
         formName = 'Present Levels';
         cy.openForm(formName);
@@ -78,7 +79,6 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
             expect(xhr.status).to.equal(200);
         });
     });
-
 
     it('Fill Curriculum and Learning Form', function () {
         formName = "Curriculum and Learning Environment";
@@ -328,6 +328,67 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 cy.get('.StudentRequiresBrailleVersionWhichIsNotYetAvailable label').click({force: true});
 cy.get('.StudentHasUniqueCircumstances label').click({force: true});
 cy.get('[field-key=\'StudentHasUniqueCrcumstancesExplain\']').clear().type('TEXT TEST',{force:true});
+
+        cy.get('a#btnUpdateForm').click();
+        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+    });
+
+    it('Fill Prior Written Notice of Non-Consensus ARD Form', function () {
+        formName = 'Prior Written Notice of Non-Consensus ARD';
+        cy.openForm(formName);
+
+        cy.get('.AreaOfDisagreementDescriptionOfTheActionRefused label',{timeout:80000}).click({force: true});
+        cy.get('a#btnUpdateForm').click();
+        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+    });
+
+    it('Fill Medicaid One-Time Parental Consent Form', function () {
+        formName = 'Medicaid One-Time Parental Consent';
+        cy.openForm(formName);
+
+        cy.get('.AreaOfDisagreementDescriptionOfTheActionRefused label',{timeout:80000}).click({force: true});
+        cy.get('.RadioIHaveBeenProvidedThisInformation label span').contains('Yes').click({force:true});
+        cy.get('.RadioIGiveMyConsent label span').contains('No').click({force:true});
+        cy.get('input[field-key=\'TextNameofParentGuardianSurrogateParentorAdultStudent\']').type('TEXT TEST',{force:true});
+        cy.get('input[field-key=\'DateNameofParentGuardianSurrogateParentorAdultStudent\'][field-title=\'Date\']').type('10/12/2020',{force:true});
+        cy.get('a#btnUpdateForm').click();
+        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+    });
+
+    it('Fill Notice of Procedural Safeguards Form', function () {
+        formName = 'Notice of Procedural Safeguards';
+        cy.openForm(formName);
+
+        cy.get('.CopyWhichInformsAboutRights label',{timeout:80000}).click({force: true});
+        cy.get('a#btnUpdateForm').click();
+        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+    });
+
+    it('Fill Review of Committee Decisions Form', function () {
+        formName = 'Review of Committee Decisions';
+        cy.openForm(formName);
+
+        cy.get('.AccommodationsConsidered label',{timeout:80000}).click({force: true});
+        cy.get('.AccommodationsAccepted label').click({force: true});
+        cy.get('.EvaluationReevaluationConsidered label').click({force: true});
+        cy.get('input[field-key=\'EvaluationReevaluationAccepted\']').check();
+        cy.get('a#btnUpdateForm').click();
+        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+    });
+
+    it('Fill Behavior Intervention Plan (BIP) Form', function () {
+        formName = 'Behavior Intervention Plan (BIP)';
+        cy.openForm(formName);
 
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
