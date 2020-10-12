@@ -56,14 +56,15 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
 cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
         cy.log('Open created Annual event');
-       cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#EventOverview',{onBeforeLoad: spyOnAddEventListener
-        }).then(waitForAppStart);
-        cy.wait('@openEvent', {timeout: 170000}).then((xhr) => {
+       //cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#EventOverview',{onBeforeLoad: spyOnAddEventListener
+        //}).then(waitForAppStart);
+       cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL')+ '#EventOverview');
+        cy.wait(5000);
+       cy.wait('@openEvent', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
             cy.writeFile('cypress/fixtures/forms.json', xhr.responseBody)
         });
-     //  cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL')+ '#PresentLevels');
-        cy.wait(5000);
+
 
     });
 
