@@ -5,8 +5,8 @@
     "testUsersPassword": "CTAKAH613777",
     "qcUsersPassword": "success",
     "eventURL": "be30912e-bbec-44ce-88bb-ac5100717774",
-    "eventURL2": "9f840a70-08b5-49a6-98b1-ac4e007c03f2",
-    "baseURL": "https://tx.acceliqc.com"
+    "eventURL2": "406d910e-4a3b-4afb-a089-ac52007e71f2",
+    "baseURL": "http://tx-demo.accelidemo.com"
   },
   "defaultCommandTimeout": 70000,
   "chromeWebSecurity": false,
