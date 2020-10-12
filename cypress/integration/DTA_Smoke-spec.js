@@ -115,7 +115,7 @@ beforeEach(function () {
             cy.log('Should display Filters');
           //  cy.get('.toolbox-min-menu').contains('Filters', {timeout: 170000}).should('be.visible');
         });
-        it.only('DTA system check on https://dade.acceliplan.com/', function () {
+        it('DTA system check on https://dade.acceliplan.com/', function () {
              urll = 'https://dade.acceliplan.com/'
                 cy.manualLogin(urll);
             /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
