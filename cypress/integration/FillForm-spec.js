@@ -396,4 +396,19 @@ cy.get('[field-key=\'StudentHasUniqueCrcumstancesExplain\']').clear().type('TEXT
             expect(xhr.status).to.equal(200);
         });
     });
+
+
+    it('Fill Skilled Nursing Services Form', function () {
+        formName = 'Skilled Nursing Services';
+        cy.openForm(formName);
+cy.get('span.PhysicianNameText input[field-key=\'PhysicianNameText\']').type('TEXT TEST',{force:true});
+cy.get('input[field-key=\'PhysicianContactInformationText\']').type('TEXT TEST',{force:true});
+cy.get('.DoesTheStudentRequireMedicationAdministrationSchoolRadio label span').contains('No').click({force:true});
+cy.get('.DoesTheStudentRequireMedicationAdministrationOutsideOfSchoolRadio label span').contains('No').click({force:true});
+cy.get('.StudentMedicalTreatmentsOrProceduresSchoolRadio label span').contains('No').click({force:true});
+        cy.get('a#btnUpdateForm').click();
+        cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+    });
 });
