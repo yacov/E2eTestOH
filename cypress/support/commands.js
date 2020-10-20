@@ -119,12 +119,25 @@ Cypress.Commands.add('openForm', (formFullName) => {
                 const sectionName = forms.Items[i].EventSection;
                 const uurl = Cypress.env('baseURL') + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#' + sectionName + '&formId=' + formdid;
                 cy.log('url of the form '+ formFullName+ 'is '+uurl);
-                cy.server()
+                cy.server();
                 cy.route('POST', '**/Events/ViewForm').as('openPage');
                 cy.visit(uurl);
                 cy.wait('@openPage', {timeout: 270000}).then((xhr) => {
                     expect(xhr.status).to.equal(200);
                 });
+            }
+        }
+    })
+});
+Cypress.Commands.add('openFormNoWait', (formFullName) => {
+    return cy.fixture('forms').then((forms) => {
+        for (var i = 0; i < forms.Items.length; i++) {
+            if(forms.Items[i].Name === formFullName) {
+                cy.log('Form '+formFullName+' found in the list.')
+                const formdid = forms.Items[i].FormId;
+                const sectionName = forms.Items[i].EventSection;
+                const uurl = Cypress.env('baseURL') + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#' + sectionName + '&formId=' + formdid;
+                cy.log('url of the form '+ formFullName+ 'is '+uurl);
             }
         }
     })
@@ -137,3 +150,15 @@ Cypress.Commands.add('getFormLink', (urll) => {
     return link;
 
 });
+
+Cypress.Commands.add(
+    'selectNth',
+    { prevSubject: 'element' },
+    (subject, pos) => {
+        cy.wrap(subject)
+            .children('option')
+            .eq(pos)
+            .then(e => {
+                cy.wrap(subject).select(e.val(),{force: true})
+            })
+    });
