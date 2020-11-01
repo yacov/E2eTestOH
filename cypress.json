@@ -5,8 +5,13 @@
     "testUsersPassword": "CTAKAH613777",
     "qcUsersPassword": "success",
     "eventURL2": "be30912e-bbec-44ce-88bb-ac5100717774",
-    "eventURL": "1d3d9369-3cc4-4c55-a4f3-ac5a0080425c",
-    "baseURL": "http://tx-demo.accelidemo.com"
+    "eventURLProd": "cca6d61c-e1e3-482e-b0e9-ac66008f14c1",
+    "eventURL": "cca6d61c-e1e3-482e-b0e9-ac66008f14c1",
+    "baseURL": "https://tx.acceliplan.com",
+    "prodBaseURL": "https://tx.acceliplan.com",
+    "googleClientId": "846668157905-nk3qle36376fdcoaio77cul73ugiq41p.apps.googleusercontent.com",
+    "googlClientSecret": "RHoazCDE-qLc-4AYHMLtUb98",
+    "googlAPIKey": "AIzaSyAmQtXkE6sTDnxOjMqWZyumOHXhJZZ1ES0"
   },
   "defaultCommandTimeout": 70000,
   "chromeWebSecurity": false,

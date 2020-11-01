@@ -91,6 +91,15 @@ Cypress.Commands.add('txDemoLogin', (urll) => {
     })
 });
 
+Cypress.Commands.add('txProdLogin', (urll) => {
+    return cy.fixture('pages').then((pages) => {
+        const loginPage = pages.loginPage;
+        cy.visit(urll + '/Login.aspx?ReturnUrl=%2fAcceliTrack/Home.aspx');
+        cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
+        cy.get(loginPage.passwordField).clear().type(Cypress.env('testUsersPassword'));
+        cy.get(loginPage.loginButton).click();
+    })
+});
 
 Cypress.Commands.add('loginif', () => {
     if(cy.url().contains('login.aspx')){
@@ -151,10 +160,7 @@ Cypress.Commands.add('getFormLink', (urll) => {
 
 });
 
-Cypress.Commands.add(
-    'selectNth',
-    { prevSubject: 'element' },
-    (subject, pos) => {
+Cypress.Commands.add('selectNth', { prevSubject: 'element' }, (subject, pos) => {
         cy.wrap(subject)
             .children('option')
             .eq(pos)
@@ -162,3 +168,56 @@ Cypress.Commands.add(
                 cy.wrap(subject).select(e.val(),{force: true})
             })
     });
+
+Cypress.Commands.add('openFormAndMeasure', (formFullName) => {
+     cy.fixture('forms').then((forms) => {
+         var measuret;
+        for (var i = 0; i < forms.Items.length; i++) {
+            if(forms.Items[i].Name === formFullName) {
+                cy.log('Form '+formFullName+' found in the list.')
+                const formdid = forms.Items[i].FormId;
+                const sectionName = forms.Items[i].EventSection;
+                const uurl = Cypress.env('baseURL') + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#' + sectionName + '&formId=' + formdid;
+                cy.log('url of the form '+ formFullName+ 'is '+uurl);
+                cy.server();
+                cy.route('POST', '**/Events/ViewForm').as('openPage');
+                cy.visit(uurl, {
+                    onBeforeLoad: (win) => {
+                        win.performance.mark('start-loading')
+                    },
+                    onLoad: (win) => {
+                        win.performance.mark('end-loading')
+                    },
+                }).its('performance').then((p) => {
+                    p.measure('pageLoad', 'start-loading', 'end-loading')
+                    const measure = p.getEntriesByName('pageLoad')[0]
+                    measuret = measure.duration;
+
+                   // assert.isAtMost(measure.duration, 1000)
+                });
+            }
+        }
+        return measuret;
+    })
+});
+
+Cypress.Commands.add('openPageAndMeasure', (uurl) => {
+    cy.fixture('forms').then((forms) => {
+        let measuret;
+                cy.visit(uurl,{timeout:170000}, {
+                    onBeforeLoad: (win) => {
+                        win.performance.mark('start-loading')
+                    },
+                    onLoad: (win) => {
+                        win.performance.mark('end-loading')
+                    },
+                }).its('performance').then((p) => {
+                    p.measure('pageLoad', 'start-loading', 'end-loading')
+                    const measure = p.getEntriesByName('pageLoad')[0]
+                    measuret = measure.duration;
+                    cy.log('Page load time is '+ measuret)
+                    // assert.isAtMost(measure.duration, 1000)
+                });
+        return measuret;
+    })
+});
