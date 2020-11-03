@@ -98,7 +98,7 @@ describe('Test DTA System Availability', function () {
     it('DTA system check on https://tx.acceliplan.com/', function () {
 
             urll = 'https://tx.acceliplan.com/'
-            cy.manualLoginTX(urll);
+            cy.manualLogin(urll);
             /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
             cy.log('Should display DTA site');
             cy.visit(urll + 'sreport')
@@ -132,8 +132,8 @@ describe('Test DTA System Availability', function () {
                 expect(xhr.status).to.equal(200);
             });
             cy.get('.toolbox-min-user div').contains('Dashboards', {timeout: 170000}).should('be.visible');
-
-            cy.get('svg.hmw-half-year', {multiple: true}).should('be.visible');
+        cy.get('.highcharts-background.widget-body', {multiple: true}, {timeout: 270000}).should('be.visible');
+//            cy.get('svg.hmw-half-year', {multiple: true}).should('be.visible');
 
             cy.log('Should display the listing of dashboards available');
             cy.get('.toolbox-min-user div').contains('Dashboards').click();
