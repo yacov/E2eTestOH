@@ -6,6 +6,7 @@ let appHasStarted;
 let datastr = [];
 let openPL;
 let openCurr;
+let physicalFA;
 let openPL2;
 let openCurr2;
 let header;
@@ -78,7 +79,7 @@ beforeEach(function () {
 });
 
 after(function (){
-    datastr.push([openPL, openCurr]);
+    datastr.push([openPL, openCurr, physicalFA]);
  //   cy.writeFile('cypress/fixtures/forms.json', '{}')
     sendDatatoGoogle(datastr);
 })
@@ -117,6 +118,8 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
             // assert.isAtMost(measure.duration, 1000)
         });
+
+
        // cy.log('PL duration is '+openPL)
        // openPL = parseFloat(openPL);
        /* cy.get('[field-title=\'Review of previous IEP, including status update(s)\']').click({force: true});
@@ -132,7 +135,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Measure Curriculum and Learning open time', function () {
         formName = "Curriculum and Learning Environment";
-        openCurr = cy.openFormAndMeasure(formName);
+      //  openCurr = cy.openFormAndMeasure(formName);
         cy.visit("https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=cca6d61c-e1e3-482e-b0e9-ac66008f14c1#PresentLevels&formId=2c8d1c9f-892f-45a4-b953-ac66008f1573", {
             onBeforeLoad: (win) => {
                 win.performance.mark('start-loading')
@@ -172,5 +175,24 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     });
 
+    it('Measure Physical Fitness Assessment form open time', function () {
+        formName = 'Physical Fitness Assessment';
+        // cy.openForm(formName);
+        // openPL = cy.openFormAndMeasure(formName);
+        cy.visit("https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=cca6d61c-e1e3-482e-b0e9-ac66008f14c1#PhysicalFitnessAssessment&formId=958d5928-d59b-4f8a-878d-ac66008f1581", {
+            onBeforeLoad: (win) => {
+                win.performance.mark('start-loading')
+            },
+            onLoad: (win) => {
+                win.performance.mark('end-loading')
+            },
+        }).its('performance').then((p) => {
+            p.measure('pageLoad', 'start-loading', 'end-loading')
+            const measure = p.getEntriesByName('pageLoad')[0]
+            physicalFA = measure.duration;
+
+            // assert.isAtMost(measure.duration, 1000)
+        });
+});
 
 });
