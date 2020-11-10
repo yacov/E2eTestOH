@@ -1,8 +1,9 @@
 //const url = "http://tx-demo.accelidemo.com"
-const url = Cypress.env('baseURL')
+const url = Cypress.env('baseDemoURL')
 let formLink;
 let formName;
 let appHasStarted
+const todaysDate = Cypress.moment().format('MM/DD/YYYY')
 
 function waitForAppStart() {
     // keeps rechecking "appHasStarted" variable
@@ -43,23 +44,23 @@ beforeEach(function () {
     cy.route('POST', '**/Events/ViewForm').as('openPage');
     cy.route('POST', '**/Events/UpdateForm').as('savePage');
     cy.route('POST', '**/Events/GetEventOverview').as('openEvent');
-   Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
+  Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
 });
 
 after(function (){
-    cy.writeFile('cypress/fixtures/forms.json', '{}')
+    //cy.writeFile('cypress/fixtures/forms.json', '{}')
 })
 
 describe('Fill Annual meeting Forms on  ' + url, function () {
 
-    it('Enter into created event', function () {
+    it.only('Enter into created event', function () {
 cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
         cy.log('Open created Annual event');
        //cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#EventOverview',{onBeforeLoad: spyOnAddEventListener
         //}).then(waitForAppStart);
        cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL')+ '#EventOverview');
-        cy.wait(5000);
+      //  cy.wait(5000);
        cy.wait('@openEvent', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
             cy.writeFile('cypress/fixtures/forms.json', xhr.responseBody)
@@ -70,7 +71,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill Present Levels', function () {
         formName = 'Present Levels';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
         cy.get('[field-title=\'Review of previous IEP, including status update(s)\']').click({force: true});
         cy.get('[field-title=\'General Ed Teacher(s)\']').click({force: true});
         cy.get('.StudentIsYoungerThan18WithAppropriateParentalInvolvement label span').contains('Yes').click({force: true});
@@ -83,7 +84,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill Curriculum and Learning Form', function () {
         formName = "Curriculum and Learning Environment";
-        cy.openForm(formName);
+        cy.openForm(formName,url);
    
         cy.get('textarea[field-title=\'Student strengths in Math\']').clear().type('test1');
         cy.get('textarea[field-title=\'Student strengths in Science\']').clear().type('test2');
@@ -98,8 +99,8 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         cy.get('textarea[data-bind=\'value: HasTheStudentHadGoalsDescriptiveSentence\']').clear().type('test text');
         cy.get('.NeedAccommodationsSupports label span').contains('Yes').click({force: true});
         cy.get('textarea[data-bind=\'value: DomainAQAAssessmentDS\']').clear().type('test text');
-//        cy.get('input[aria-owns=\'cbxPens_taglist cbxPens_listbox\']').click({force: true});
- //       cy.get('[name=\'pens\'] option').contains('Alt Academic & Life Skills - Academics: Math').click({force: true});
+        //select random PEN
+        cy.get('input[aria-describedby=\'cbxPens_taglist\']').type('a').type('{downarrow}').type('{enter}');
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -108,7 +109,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill Social or Emotional Behavior Form', function () {
         formName = "Social or Emotional Behavior";
-        cy.openForm(formName);
+        cy.openForm(formName,url);
         cy.get('textarea[field-title=\'The strengths of the student\']').clear().type('test text');
         cy.get('.DoesDisabilityAffectInvolvement label span').contains('Yes').click({force: true});
         cy.get('.DoesTheStudentRequireSocialCommunicationInstruction label span').contains('Yes').click({force: true});
@@ -119,18 +120,8 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         cy.get('.DoesTheStudentRequireSpecialEducationCounselingServicesLocations label span').contains('One service location').click({force: true});
         cy.get('textarea[data-bind=\'value: DoesTheStudentRequireSpecialEducationCounselingServicesDS\']').clear().type('test22');
 //select random PEN
-        cy.get('input[aria-describedby=\'cbxPens_taglist\']').click({force: true}).type('a');
-        cy.get("#cbxPens[name='pens'] option").as("options")
-        cy
-            .get("@options")
-            .its('length')
-            .then(len => Math.floor(Math.random() * Math.floor(len-1)))
-            .then((index) => {
-                cy.get("@options").eq(index).scrollIntoView().click({force: true});
-            })
+        cy.get('input[aria-describedby=\'cbxPens_taglist\']').type('a').type('{downarrow}').type('{enter}');
 
-        //cy.get('select#cbxPens[name=\'pens\']').selectNth(1);
-        //cy.get('select#cbxPens[name=\'pens\']').selectNth(2);
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -139,7 +130,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill Independent Functioning Form', function () {
         formName = "Independent Functioning";
-        cy.openForm(formName);
+        cy.openForm(formName,url);
         cy.get('[field-title=\'The strengths of the student\']').type('test text');
         cy.get('.DoesDisabilityAffectInvolvement label span').contains('Yes').click({force: true});
 
@@ -147,17 +138,8 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         cy.get('.AdaptedPhysicalEducationSpecializedInstruction label').click({force: true});
         cy.get('.AdaptedPhysicalEducationSpecializedInstructionServicesOneOrTwo label span').contains('One service location').click({force: true});
         cy.get('textarea[data-bind=\'value: DescriptiveAdaptedPhysicalEducationSpecialized\']').clear().type('test text');
-        //select PEN
-        cy.get('input[aria-describedby=\'cbxPens_taglist\']').click({force: true}).type('a');
-       /* cy.get("#cbxPens[name='pens'] option").as("options")
-        cy
-            .get("@options")
-            .its('length')
-            .then(len => Math.floor(Math.random() * Math.floor(len-1)))
-            .then((index) => {
-                cy.get("@options").eq(index).scrollIntoView().click({force: true});
-            })*/
-        cy.get('select#cbxPens[name=\'pens\']').selectNth(1);
+        //select random PEN
+        cy.get('input[aria-describedby=\'cbxPens_taglist\']').type('a').type('{downarrow}').type('{enter}');
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -166,7 +148,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill Health Care Form', function () {
         formName = "Health Care";
-        cy.openForm(formName);
+        cy.openForm(formName,url);
         cy.get('.DoesDisabilityAffectInvolvement label span').contains('Yes').click({force: true});
         cy.get('.HasPreviousGoals label span').contains('Yes').click({force: true});
         cy.get('textarea[data-bind=\'value: HasPreviousGoalsDescription\']').clear().type('testtext');
@@ -178,7 +160,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         cy.get('.SkilledNursingServicesOneTwo label span').contains('One service location').click({force: true});
 
         cy.get('textarea[data-bind=\'value: SkilledNursingServicesDescription\']').clear().type('test text');
-        cy.get('select#cbxPens[name=\'pens\']').selectNth(0);
+
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -187,7 +169,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill Communication Form', function () {
         formName = "Communication";
-        cy.openForm(formName);
+        cy.openForm(formName,url);
         cy.get('textarea[field-title=\'The strengths of the student\']').clear().type('test text');
         cy.get('.DoesDisabilityAffectInvolvement label span').contains('Yes').click({force: true});
 
@@ -198,16 +180,45 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         cy.get('.DoesStudentRequireAuditoryImpairmentServicesSpecializedInstruction label').click({force: true});
         cy.get('.SpecializedInstructionOneOrTwoServiceLocation label span').contains('One service location').click({force: true});
         cy.get('textarea[field-key=\'DoesStudentRequireAuditoryImpairmentServicesDescriptiveSentence\']').type('test text');
-        cy.get('select#cbxPens[name=\'pens\']').selectNth(2);
+
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
     });
 
+    it.only('Fill Goals Form', function () {
+        formName = 'Goals';
+         cy.openFormNoWait(formName,url);
+        cy.get('a[title=\'Modify\']').eq(0).click({force:true});
+        cy.get('textarea#GoalDescription').type('Test test');
+        cy.get('[aria-describedby=\'goalEvaluationProcedureSelectedIds_taglist\']').click({force: true}).type('{downarrow}').type('{enter}').blur();
+        cy.get('[aria-describedby=\'measuredByIds_taglist\']').click({force: true}).type('{downarrow}').type('{enter}').blur();
+         cy.get('select#GoalEvaluationProcedure_HowOftenId option').eq(0).invoke('val').then((val)=>{
+                     cy.get('select#GoalEvaluationProcedure_HowOftenId').select(val,{force:true});
+                     });
+
+ cy.get('select[name=\'GoalEvaluationProcedure.SelectedIds\'] option').eq(0).invoke('val').then((val)=>{
+             cy.get('select[name=\'GoalEvaluationProcedure.SelectedIds\']').select(val,{force:true});
+             })
+        cy.get('#StartDate').clear().type(todaysDate)
+        cy.get('input#RelatedServices').click({force: true});
+        /* cy.get('a#btnAddAccommodations').click();
+         cy.get('[aria-owns=\'.clear().typeId_listbox\']').click({force: true});
+         cy.get('span.k-input').contains('High Tech').click({force: true});
+         cy.get('select#NameId').select('Amplification Devices: Hearing Assistive Technology', {force: true});
+         cy.get('select#SubjectIds').select('Athletics', {force: true});
+         cy.get('input#IsClassroom').check({force: true});
+         cy.get('[aria-controls=\'StartDate_dateview\'] span.k-i-calendar').click();
+         cy.get('a.k-nav-today').click({force: true});
+         cy.get('span[aria-controls=\'EndDate_dateview\']').click();
+         cy.get('a.k-nav-today').click({force: true});
+         cy.get('a#btnSaveAccommodation.k-button[.clear().type=\'submit\']');*/
+    });
+
     it('Fill Assistive Technology Form', function () {
         formName = 'Assistive Technology';
-        cy.openFormNoWait(formName);
+        cy. openFormNoWait(formName,url);
        /* cy.get('a#btnAddAccommodations').click();
         cy.get('[aria-owns=\'.clear().typeId_listbox\']').click({force: true});
         cy.get('span.k-input').contains('High Tech').click({force: true});
@@ -223,7 +234,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill Assistive Technology Needs Form', function () {
         formName = 'Assistive Technology Needs';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
        /* cy.get('[data-abbreviation=\'AT=Yes\'][field-key=\'RadioATYesNo\']').click({force: true});
         cy.get('span.CheckboxThestudent label').click({force: true});
         cy.get('[data-bind=\'value: TextExplain\']').clear().type('test text');*/
@@ -235,7 +246,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill ARD Data Form', function () {
         formName = 'ARD Data';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -245,7 +256,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill Physical Fitness Assessment Form', function () {
         formName = 'Physical Fitness Assessment';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
         cy.get('.RadioBrFHBsFIItJwEJAGsttuvGAHrJwtJGwF label span').contains('Yes').click({force: true});
         cy.get('input[field-key=\'CheckboxECAtJAwDFttwEEIDsDsuFGsAwtAHDHuD\']').check({force: true});
         cy.get('input[field-key=\'CheckboxJGrrJuCtuwBuEvrrIJArJFvHIuAAAuFJ\']').check({force: true});
@@ -258,7 +269,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill STAAR Alternate 2 Participation Requirements Form', function () {
         formName = 'STAAR Alternate 2 Participation Requirements';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
         cy.get('.IsStudentConsiderStaarAlt label span').contains('Yes').click({force: true});
         cy.get('span.NameAndPositionOfPerson').click();
         cy.get('select[field-key=\'NameAndPositionOfPerson\'][data-bind=\'value: NameAndPositionOfPerson\'] option').last().invoke('val').then(($val) => {
@@ -283,7 +294,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill STAAR Participation Form', function () {
         formName = 'STAAR Participation';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
         cy.get('select[field-key=\'CurrentYearGrade\']').select('2', {force: true});
         cy.get('select[field-key=\'FutureYearGrade\']').select('4', {force: true});
 
@@ -313,7 +324,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill TELPAS Alternate Participation Requirements Form', function () {
         formName = 'TELPAS Alternate Participation Requirements';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
 
         cy.get('.YesNoStudentConsideredForTelpas label span').contains('Yes').click({force: true});
         cy.get('select[field-key=\'NameAndPositionOfPerson\'] option').last().invoke('val').then((val) => {
@@ -336,7 +347,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
 
     it('Fill TELPAS Participation Form', function () {
         formName = 'TELPAS Participation';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
 
         cy.get('.IsLEPStudentWhoInGradesK12 label span',{timeout:80000}).contains('Yes').click({force: true});
         cy.get('select[field-key=\'ReadingParticipation\']').select('TELPAS',{force:true});
@@ -355,7 +366,7 @@ cy.get('[field-key=\'StudentHasUniqueCrcumstancesExplain\']').clear().type('TEXT
 
     it('Fill Prior Written Notice of Non-Consensus ARD Form', function () {
         formName = 'Prior Written Notice of Non-Consensus ARD';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
 
        // cy.get('.AreaOfDisagreementDescriptionOfTheActionRefused label',{timeout:80000}).first().click({force: true});
         cy.get('.AreaOfDisagreementDescriptionOfTheActionRefused label',{timeout:80000}).eq(-1).click({force: true});
@@ -368,7 +379,7 @@ cy.get('[field-key=\'StudentHasUniqueCrcumstancesExplain\']').clear().type('TEXT
 
     it('Fill Medicaid One-Time Parental Consent Form', function () {
         formName = 'Medicaid One-Time Parental Consent';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
 
         cy.get('.RadioIHaveBeenProvidedThisInformation label span').contains('Yes').click({force:true});
         cy.get('.RadioIGiveMyConsent label span').contains('No').click({force:true});
@@ -382,7 +393,7 @@ cy.get('[field-key=\'StudentHasUniqueCrcumstancesExplain\']').clear().type('TEXT
 
     it('Fill Notice of Procedural Safeguards Form', function () {
         formName = 'Notice of Procedural Safeguards';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
 
         cy.get('.CopyWhichInformsAboutRights label',{timeout:80000}).click({force: true});
         cy.get('a#btnUpdateForm').click();
@@ -393,7 +404,7 @@ cy.get('[field-key=\'StudentHasUniqueCrcumstancesExplain\']').clear().type('TEXT
 
     it('Fill Review of Committee Decisions Form', function () {
         formName = 'Review of Committee Decisions';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
 
         cy.get('.AccommodationsConsidered label',{timeout:80000}).click({force: true});
         cy.get('.AccommodationsAccepted label').click({force: true});
@@ -407,7 +418,7 @@ cy.get('[field-key=\'StudentHasUniqueCrcumstancesExplain\']').clear().type('TEXT
 
     it('Fill Behavior Intervention Plan (BIP) Form', function () {
         formName = 'Behavior Intervention Plan (BIP)';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
 cy.get('.RadiosYesNo span label span').contains('Yes').click({force:true});
 cy.get('.js-checkbox-list label').first().click({force:true});
         cy.get('.js-checkbox-list label').eq(-1).click({force:true});
@@ -420,7 +431,7 @@ cy.get('.js-checkbox-list label').first().click({force:true});
 
     it('Transportation', function () {
         formName = 'Transportation';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
         cy.get('.RequireTransportationRadioButtons label span').contains('No').click({force:true});
         cy.get('a#btnUpdateForm').click();
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
@@ -431,7 +442,7 @@ cy.get('.js-checkbox-list label').first().click({force:true});
 
     it('Fill Skilled Nursing Services Form', function () {
         formName = 'Skilled Nursing Services';
-        cy.openForm(formName);
+        cy.openForm(formName,url);
 cy.get('span.PhysicianNameText input[field-key=\'PhysicianNameText\']').type('TEXT TEST',{force:true});
 cy.get('input[field-key=\'PhysicianContactInformationText\']').type('TEXT TEST',{force:true});
 cy.get('.DoesTheStudentRequireMedicationAdministrationSchoolRadio label span').contains('No').click({force:true});

@@ -119,14 +119,14 @@ Cypress.Commands.add('login', (urll) => {
     })
 });
 
-Cypress.Commands.add('openForm', (formFullName) => {
+Cypress.Commands.add('openForm', (formFullName,uurll) => {
     return cy.fixture('forms').then((forms) => {
         for (var i = 0; i < forms.Items.length; i++) {
             if(forms.Items[i].Name === formFullName) {
                 cy.log('Form '+formFullName+' found in the list.')
                 const formdid = forms.Items[i].FormId;
                 const sectionName = forms.Items[i].EventSection;
-                const uurl = Cypress.env('baseURL') + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#' + sectionName + '&formId=' + formdid;
+                const uurl = uurll + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#' + sectionName + '&formId=' + formdid;
                 cy.log('url of the form '+ formFullName+ 'is '+uurl);
                 cy.server();
                 cy.route('POST', '**/Events/ViewForm').as('openPage');
@@ -138,14 +138,15 @@ Cypress.Commands.add('openForm', (formFullName) => {
         }
     })
 });
-Cypress.Commands.add('openFormNoWait', (formFullName) => {
+Cypress.Commands.add('openFormNoWait', (formFullName, urlll) => {
     return cy.fixture('forms').then((forms) => {
         for (var i = 0; i < forms.Items.length; i++) {
             if(forms.Items[i].Name === formFullName) {
                 cy.log('Form '+formFullName+' found in the list.')
                 const formdid = forms.Items[i].FormId;
                 const sectionName = forms.Items[i].EventSection;
-                const uurl = Cypress.env('baseURL') + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#' + sectionName + '&formId=' + formdid;
+                const uurl = urlll + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#' + sectionName + '&formId=' + formdid;
+                cy.visit(uurl);
                 cy.log('url of the form '+ formFullName+ 'is '+uurl);
             }
         }
@@ -168,6 +169,15 @@ Cypress.Commands.add('selectNth', { prevSubject: 'element' }, (subject, pos) => 
                 cy.wrap(subject).select(e.val(),{force: true})
             })
     });
+
+Cypress.Commands.add("selectNth2", (select, pos) => {
+    cy.get(`${select} option +option`)
+        .eq(pos)
+        .then( e => {
+            cy.get(select)
+                .select(e.val(),{force: true})
+        })
+})
 
 Cypress.Commands.add('openFormAndMeasure', (formFullName) => {
      cy.fixture('forms').then((forms) => {
