@@ -16,7 +16,17 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 import './fillForms'
+require('cypress-xpath')
+const fs = require('fs');
 
+module.exports = (on, config) => {
+    on('task', {
+        writeFile ({ filename, data, flag }) {
+            fs.writeFileSync(filename, data, flag);
+            return null;
+        }
+    })
+}
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 

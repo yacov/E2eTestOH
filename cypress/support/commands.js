@@ -231,3 +231,26 @@ Cypress.Commands.add('openPageAndMeasure', (uurl) => {
         return measuret;
     })
 });
+
+Cypress.Commands.add('getColumnIndex', (uurl) => {
+   let indexx = 0;
+    cy.get('div.lblField [style=\'text-align:center;\']').then(($el) => {
+        // $el is a wrapped jQuery element
+        const teext = $el.invoke('text');
+        if (teext===uurl) {
+          cy.log('Index of column '+uurl+' is ' +$el)
+            return index;
+        }
+        else{
+            cy.log('Index of column '+teext+' is ' +index)
+        }
+    });
+});
+
+Cypress.Commands.add('seedAndVisit', (seedData = 'fixture:dataId') => {
+    let url = `https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=${seedData.EventId}#LREServiceAlternatives&formId=${seedData.FormId}`;
+    cy.visit(url)
+    cy.wait('@openPage', {timeout: 180000}).then((xhr) => {
+        expect(xhr.status).to.equal(200);
+    });
+})
