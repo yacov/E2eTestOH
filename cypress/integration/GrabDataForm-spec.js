@@ -18,13 +18,17 @@ let iaeb;
 let grabbedData;
 let fullData = [];
 const ids = require('../fixtures/dataId.json')
+let fileNametxt = 'cypress/fixtures/form4.txt';
+let ind = 0;
+let i2 = 5;
 
 
 before(function () {
 
     cy.txProdLogin('https://tx.acceliplan.com');
     //  cy.txDemoLogin('http://tx-demo.accelidemo.com');
-    cy.writeFile('cypress/fixtures/form.txt', '{', {flag: 'a+'});
+
+    //cy.writeFile(fileNametxt, '{', {flag: 'a+'});
     Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
 });
 beforeEach(function () {
@@ -33,21 +37,20 @@ beforeEach(function () {
 
 after(function () {
     //  datastr.push([openPL, openCurr, physicalFA]);
-      cy.writeFile('cypress/fixtures/form.txt', '}', {flag: 'a+'});
+  //    cy.writeFile(fileNametxt, '}', {flag: 'a+'});
     //  sendDatatoGoogle(datastr);
 
 })
 afterEach(function () {
-
-
     const out = fullData.join("\n");
-    cy.writeFile('cypress/fixtures/form.txt', out, {flag: 'a+'});
+    cy.writeFile(fileNametxt, out, {flag: 'a+'});
 })
 
 describe('Grab data', function () {
     ids.forEach((id, i, listt) => {
+        ind++;
         it('Open created event ang grab data', function () {
-            let ind = 0;
+
             ind++;
             let urlll = `https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=${id.EventId}#LREServiceAlternatives&formId=${id.FormId}`;
             //  let urlll = `http://tx-demo.accelidemo.com/plan/Events/ViewEvent?eventId=${id.EventId}#LREServiceAlternatives&formId=${id.FormId}`;
@@ -75,13 +78,13 @@ describe('Grab data', function () {
                 iaeb = aebb;
             });
             cy.xpath('//div[contains(@class,\'column\')][3]//span[@class=\'k-input\'][text()]//ancestor::div[contains(@class,\'clearfix\')]').each((elem, index, list) => {
-                cy.get(elem).xpath('./div[contains(@class,\'column\')][1]//div[contains(@class,\'lblField\')]').then((_rowName) => {
+                cy.get(elem).xpath('.//div[contains(@class,\'column\')][1]//div[contains(@class,\'lblField\')]').then((_rowName) => {
                     const field = _rowName.text().trim();
 
-                    cy.get(elem).xpath(`./div[contains(@class,\'column\')][${iaeb}]//span//span[@class='k-input']`).then((_aebValue) => {
+                    cy.get(elem).xpath(`.//div[contains(@class,\'column\')][${iaeb}]//span//span[@class='k-input']`).then((_aebValue) => {
                         const aebValue = _aebValue.text().trim();
 
-                        cy.get(elem).xpath(`./div[contains(@class,\'column\')][${ineb}]//span//span[@class='k-input']`).then((_nebValue) => {
+                        cy.get(elem).xpath(`.//div[contains(@class,\'column\')][${ineb}]//span//span[@class='k-input']`).then((_nebValue) => {
                             const nebValue = _nebValue.text().trim();
 
 
@@ -92,6 +95,10 @@ describe('Grab data', function () {
 
                             } else {
                                 grabbedData = `"${field}":{"Nonacademic Educational Benefit":{"Value":"${nebValue}"},"Academic Educational Benefit":{"Value":"${aebValue}"}}},`;
+                                if (ind === 20){
+                                    fileNametxt = 'cypress/fixtures/form'+(i2++)+'.txt';
+                                    ind = 0;
+                                }
                             }
                             fullData.push(grabbedData);
                         });

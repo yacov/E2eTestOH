@@ -18,5 +18,7 @@
   "chromeWebSecurity": false,
   "$schema": "https://on.cypress.io/cypress.schema.json",
   "pageLoadTimeout": 70000,
-  "projectId": "xhwbke"
+  "video": false,
+  "projectId": "xhwbke",
+  "retries": 1
 }
