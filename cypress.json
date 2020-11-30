@@ -19,6 +19,6 @@
   "$schema": "https://on.cypress.io/cypress.schema.json",
   "pageLoadTimeout": 70000,
   "video": false,
-  "projectId": "xhwbke",
+  "projectId": "bkopu8",
   "retries": 2
 }
