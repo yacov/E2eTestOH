@@ -18,9 +18,9 @@ let iaeb;
 let grabbedData;
 let fullData = [];
 const ids = require('../fixtures/dataId.json')
-let fileNametxt = 'cypress/fixtures/form6.txt';
+let fileNametxt = 'cypress/fixtures/form35.txt';
 let ind = 0;
-let i2 = 5;
+let i2 = 20;
 
 
 before(function () {
@@ -42,7 +42,7 @@ after(function () {
 
 })
 afterEach(function () {
-    const out = fullData.join("\n");
+    const out = fullData.join(" ");
     cy.writeFile(fileNametxt, out, {flag: 'a+'});
 })
 
@@ -78,7 +78,7 @@ describe('Grab data', function () {
                 iaeb = aebb;
             });
             cy.xpath('//div[contains(@class,\'column\')][3]//span[@class=\'k-input\'][text()]//ancestor::div[contains(@class,\'clearfix\')]').each((elem, index, list) => {
-                cy.get(elem).xpath('.//div[contains(@class,\'column\')][1]//div[contains(@class,\'lblField\')]').then((_rowName) => {
+                cy.get(elem).xpath('./div[contains(@class,\'column\')][1]//div[contains(@class,\'lblField\')]').then((_rowName) => {
                     const field = _rowName.text().trim();
 
                     cy.get(elem).xpath(`.//div[contains(@class,\'column\')][${iaeb}]//span//span[@class='k-input']`).then((_aebValue) => {

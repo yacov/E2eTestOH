@@ -1,4 +1,4 @@
-const urls = ["https://dc.acceliplan.com/", "https://washoe.acceliplan.com/", "https://broward.acceliplan.com/", "https://santa-rosa.acceliplan.com/"];
+const urls = ["https://washoe.acceliplan.com/", "https://broward.acceliplan.com/", "https://santa-rosa.acceliplan.com/"];
 let urll;
 let spy;
 let schoolName1;
@@ -116,6 +116,33 @@ describe('Test DTA System Availability', function () {
             // cy.get('div.search').should('be.visible');
             cy.log('Should display Filters');
             //  cy.get('.toolbox-min-menu').contains('Filters', {timeout: 170000}).should('be.visible');
+
+
+    });
+    it.only('DTA system check on https://dc.acceliplan.com/', function () {
+
+        urll = 'https://dc.acceliplan.com/'
+        cy.manualLogin(urll);
+        /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
+        cy.log('Should display DTA site');
+        cy.visit(urll + 'sreport')
+        cy.server()
+        cy.route('POST', '**/jaql').as('getReports');
+        cy.wait('@getReports', {timeout: 50000}, {multiple: true}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+        //cy.get('.toolbox-min-user div').contains('Dashboards', {timeout: 270000}).should('be.visible');
+        cy.get('.toolbox-min-user div').contains('Dashboards').click();
+        cy.get('[title=\'Provider Productivity\'] span').click();
+        cy.get('.highcharts-background.widget-body', {multiple: true}, {timeout: 270000}).should('be.visible');
+        cy.wait('@getReports', {timeout: 50000}, {multiple: true}).then((xhr) => {
+            expect(xhr.status).to.equal(200);
+        });
+        cy.log('Should display the listing of dashboards available');
+        //
+        // cy.get('div.search').should('be.visible');
+        cy.log('Should display Filters');
+        //  cy.get('.toolbox-min-menu').contains('Filters', {timeout: 170000}).should('be.visible');
 
 
     });
