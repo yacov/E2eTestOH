@@ -119,7 +119,7 @@ describe('Test DTA System Availability', function () {
 
 
     });
-    it.only('DTA system check on https://dc.acceliplan.com/', function () {
+    it('DTA system check on https://dc.acceliplan.com/', function () {
 
         urll = 'https://dc.acceliplan.com/'
         cy.manualLogin(urll);
