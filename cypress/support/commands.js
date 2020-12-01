@@ -134,6 +134,7 @@ Cypress.Commands.add('openForm', (formFullName,uurll) => {
                 cy.wait('@openPage', {timeout: 270000}).then((xhr) => {
                     expect(xhr.status).to.equal(200);
                 });
+              cy.contains('.k-notification-error','An error has occurred').should('not.exist');
             }
         }
     })
@@ -177,6 +178,14 @@ Cypress.Commands.add("selectNth2", (select, pos) => {
             cy.get(select)
                 .select(e.val(),{force: true})
         })
+})
+
+Cypress.Commands.add("getCurrentBuild", () => {
+    let build = cy.get('span.version').text();
+    build = build.replace(/\D/g,'');
+    cy.log('current build is '+build);
+    return build;
+
 })
 
 Cypress.Commands.add('openFormAndMeasure', (formFullName) => {
@@ -254,3 +263,21 @@ Cypress.Commands.add('seedAndVisit', (seedData = 'fixture:dataId') => {
         expect(xhr.status).to.equal(200);
     });
 })
+
+Cypress.Commands.add('waitForLoading', () => {
+    cy.get('.loader-circle.k-i-loading').should('not.exist',{timeout:120000});
+})
+
+Cypress.Commands.add('isElementExists', (loc) => {
+    let a;
+    cy.get("body").then($body => {
+        if ($body.find(loc).length > 0) {   //evaluates as true
+            a = true;
+            cy.log('Element found')
+        } else {
+            a = false;
+            cy.log('Element is not found')
+        }
+        return a;
+    });
+});

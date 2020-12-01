@@ -81,7 +81,7 @@ beforeEach(function () {
 after(function (){
     datastr.push([openPL, openCurr, physicalFA]);
  //   cy.writeFile('cypress/fixtures/forms.json', '{}')
-    sendDatatoGoogle(datastr);
+ //   sendDatatoGoogle(datastr);
 })
 
 describe('Monitor Initial Event pages performance on  ' + url, function () {

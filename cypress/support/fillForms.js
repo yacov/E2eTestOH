@@ -5,10 +5,11 @@ cy.fillForms = {
     saveFormNormal: () => {
         cy.log('Should save Form changes');
         cy.get('a#btnUpdateForm').click();
+
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
         });
-
+        cy.contains('.k-notification[data-role=\'alert\']','Form has been updated successfully').should('be.visible');
     },
     fillPresentLevels: () => {
         cy.get('[field-title=\'Review of previous IEP, including status update(s)\']').click({force: true});

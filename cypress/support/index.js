@@ -16,6 +16,7 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 import './fillForms'
+import './events'
 require('cypress-xpath')
 const fs = require('fs');
 

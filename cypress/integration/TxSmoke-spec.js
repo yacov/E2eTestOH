@@ -3,40 +3,13 @@
 //todo Correct filling Accommodations
 //todo correct filling Services
 
-//const url = "http://tx-demo.accelidemo.com"
-const url = Cypress.env('baseDemoURL')
+const url = Cypress.env('baseURL')
+//const url = Cypress.env('baseDemoURL')
 let formLink;
 let formName;
 let appHasStarted
+let eventId;
 
-
-function waitForAppStart() {
-    // keeps rechecking "appHasStarted" variable
-    return new Cypress.Promise((resolve, reject) => {
-        const isReady = () => {
-            if (appHasStarted) {
-                return resolve()
-            }
-            setTimeout(isReady, 0)
-        }
-        isReady()
-    })
-}
-
-function spyOnAddEventListener(win) {
-    // win = window object in our application
-    const addListener = win.EventTarget.prototype.addEventListener
-    win.EventTarget.prototype.addEventListener = function (name) {
-        if (name === 'change') {
-            // web app added an event listener to the input box -
-            // that means the web application has started
-            appHasStarted = true
-            // restore the original event listener
-            win.EventTarget.prototype.addEventListener = addListener
-        }
-        return addListener.apply(this, arguments)
-    }
-}
 
 before(function () {
     if (url.includes('demo')) {
@@ -46,6 +19,12 @@ before(function () {
         cy.txqclLogin(url);
     }
     Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
+    cy.visit(`${url}/planng/Students/ViewStudent/${Cypress.env('txQcStudentId')}/Events/IEP`);
+    cy.waitForLoading();
+    cy.wait(2500);
+  /*  cy.server()
+    cy.route('GET', '**!/IEP').as('openEvents');
+    cy.wait('@openEvents', {timeout: 170000});*/
 });
 beforeEach(function () {
     cy.server()
@@ -59,15 +38,22 @@ after(function () {
     //cy.writeFile('cypress/fixtures/forms.json', '{}')
 })
 
-describe('Fill Annual meeting Forms on  ' + url, function () {
+describe('Smoke test of Annual meeting on  ' + url, function () {
+    it.only('Delete existing events', function () {
+       cy.events.deleteAllEvents();
+    });
+    it.only('Create new Annual event and open page', function () {
+        cy.events.createEvent('ARD Annual Meeting');
 
+
+    });
     it.only('Enter into created event', function () {
-        cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
+       // cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
         cy.log('Open created Annual event');
         //cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#EventOverview',{onBeforeLoad: spyOnAddEventListener
         //}).then(waitForAppStart);
-        cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#EventOverview');
+        cy.visit(url + eventId + '#EventOverview');
         //  cy.wait(5000);
         cy.wait('@openEvent', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
@@ -119,7 +105,7 @@ describe('Fill Annual meeting Forms on  ' + url, function () {
         cy.fillForms.saveFormNormal();
     });
 
-    it.only('Fill Goals Form', function () {
+    it('Fill Goals Form', function () {
         formName = 'Goals';
         cy.openFormNoWait(formName, url);
         cy.fillForms.fillSaveGoals();
