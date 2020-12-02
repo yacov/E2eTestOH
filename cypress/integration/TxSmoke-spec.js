@@ -22,7 +22,7 @@ before(function () {
         cy.txqclLogin(url);
     }
     Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
-    cy.visit(`${url}/planng/Students/ViewStudent/${Cypress.env('txQcStudentId')}/Events/IEP`);
+    cy.visit(`${url}/planng/Students/ViewStudent/${Cypress.env('txStudentId')}/Events/IEP`);
     cy.waitForLoading();
     cy.wait(2500);
 });

@@ -1,7 +1,8 @@
 {
   "animationDistanceThreshold": 100,
   "env": {
-    "txQcStudentId": "119782",
+    "txStudentId": "119782",
+    "tag": "TX_QC_Smoke",
     "testUserName": "Superlion",
     "testUsersPassword": "CTAKAH613777",
     "qcUsersPassword": "success",
