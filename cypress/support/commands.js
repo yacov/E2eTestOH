@@ -164,7 +164,7 @@ Cypress.Commands.add('openFormSmoke', (formFullName) => {
                     cy.wait('@openPage', {timeout: 270000}).then((xhr) => {
                         expect(xhr.status).to.equal(200);
                         expect(xhr, 'has duration in ms').to.have.property('duration').and.be.a('number');
-                        //expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
+                        expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
                     });
                     cy.contains('.k-notification-error','An error has occurred').should('not.exist');
                 });

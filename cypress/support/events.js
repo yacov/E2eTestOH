@@ -72,7 +72,7 @@ cy.events = {
             cy.wait('@openEvent', {timeout: 170000}).then((xhr) => {
                 //  expect(xhr.status).to.equal(200);
                 expect(xhr, 'has duration in ms').to.have.property('duration').and.be.a('number');
-                // expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
+                 expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
                 cy.writeFile('cypress/fixtures/forms.json', xhr.responseBody)
             });
 
