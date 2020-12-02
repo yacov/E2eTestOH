@@ -19,7 +19,6 @@
   "chromeWebSecurity": false,
   "$schema": "https://on.cypress.io/cypress.schema.json",
   "pageLoadTimeout": 70000,
-  "video": false,
   "projectId": "bkopu8",
-  "retries": 0
+  "retries": 1
 }

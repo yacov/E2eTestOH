@@ -133,25 +133,66 @@ Cypress.Commands.add('openForm', (formFullName,uurll) => {
                 cy.visit(uurl);
                 cy.wait('@openPage', {timeout: 270000}).then((xhr) => {
                     expect(xhr.status).to.equal(200);
+                    expect(xhr, 'has duration in ms').to.have.property('duration').and.be.a('number');
+                    //  expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
                 });
               cy.contains('.k-notification-error','An error has occurred').should('not.exist');
             }
         }
     })
 });
-Cypress.Commands.add('openFormNoWait', (formFullName, urlll) => {
+Cypress.Commands.add('getFullUrl', () => {
+     cy.fixture('fullUrl').then((fullUrl) => {
+         return fullUrl.urll;
+    })
+});
+
+Cypress.Commands.add('openFormSmoke', (formFullName) => {
     return cy.fixture('forms').then((forms) => {
         for (var i = 0; i < forms.Items.length; i++) {
             if(forms.Items[i].Name === formFullName) {
                 cy.log('Form '+formFullName+' found in the list.')
                 const formdid = forms.Items[i].FormId;
                 const sectionName = forms.Items[i].EventSection;
-                const uurl = urlll + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#' + sectionName + '&formId=' + formdid;
-                cy.visit(uurl);
-                cy.log('url of the form '+ formFullName+ 'is '+uurl);
+                cy.readFile('cypress/fixtures/fullUrl.txt').then(u =>{
+                    const uu = u;
+                    const uurl = uu + '#' + sectionName + '&formId=' + formdid;
+                    cy.log('url of the form '+ formFullName+ 'is '+uurl);
+                    cy.server();
+                    cy.route('POST', '**/Events/ViewForm').as('openPage');
+                    cy.visit(uurl);
+                    cy.wait('@openPage', {timeout: 270000}).then((xhr) => {
+                        expect(xhr.status).to.equal(200);
+                        expect(xhr, 'has duration in ms').to.have.property('duration').and.be.a('number');
+                        //expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
+                    });
+                    cy.contains('.k-notification-error','An error has occurred').should('not.exist');
+                });
             }
+
         }
     })
+
+});
+
+Cypress.Commands.add('openFormSmokeNoWait', (formFullName) => {
+    return cy.fixture('forms').then((forms) => {
+        for (var i = 0; i < forms.Items.length; i++) {
+            if(forms.Items[i].Name === formFullName) {
+                cy.log('Form '+formFullName+' found in the list.')
+                const formdid = forms.Items[i].FormId;
+                const sectionName = forms.Items[i].EventSection;
+                cy.readFile('cypress/fixtures/fullUrl.txt').then(u =>{
+                    const uu = u;
+                    const uurl = uu + '#' + sectionName + '&formId=' + formdid;
+                    cy.log('url of the form '+ formFullName+ 'is '+uurl);
+                    cy.visit(uurl);
+                    cy.contains('.k-notification-error','An error has occurred').should('not.exist');
+                });
+            }
+
+        }
+    });
 });
 
 Cypress.Commands.add('getFormLink', (urll) => {

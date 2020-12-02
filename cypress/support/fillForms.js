@@ -8,6 +8,8 @@ cy.fillForms = {
 
         cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
+            expect(xhr, 'has duration in ms').to.have.property('duration').and.be.a('number');
+            expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(15000);
         });
         cy.contains('.k-notification[data-role=\'alert\']','Form has been updated successfully').should('be.visible');
     },
@@ -109,6 +111,7 @@ cy.fillForms = {
         cy.get('#StartDate').click({force: true}).clear().focus().type(todaysDate).blur();
         cy.get('input#RelatedServices').click({force: true});
         cy.get('a#btnSaveMiamiGoal').click({force: true});
+        cy.contains('.k-notification-error','An error has occurred').should('not.exist');
     },
     fillSaveAccomodations: () => {
         /* cy.get('a#btnAddAccommodations').click();
@@ -142,7 +145,7 @@ cy.fillForms = {
     },
     fillSTAARAlternate2ParticipationRequirements: () => {
         cy.get('.IsStudentConsiderStaarAlt label span').contains('Yes').click({force: true});
-        cy.get('span.NameAndPositionOfPerson').click();
+        cy.get('span.NameAndPositionOfPerson').click({force: true});
         cy.get('select[field-key=\'NameAndPositionOfPerson\'][data-bind=\'value: NameAndPositionOfPerson\'] option').last().invoke('val').then(($val) => {
 
             cy.get('select[field-key=\'NameAndPositionOfPerson\'][data-bind=\'value: NameAndPositionOfPerson\']').select($val, {force: true});
