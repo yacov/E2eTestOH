@@ -18,6 +18,9 @@ before(function () {
     if (url.includes('tx.acceliqc.com')) {
         cy.txqclLogin(url);
     }
+    if (url.includes('tx.acceliplan.com')) {
+        cy.txqclLogin(url);
+    }
     Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
     cy.visit(`${url}/planng/Students/ViewStudent/${Cypress.env('txQcStudentId')}/Events/IEP`);
     cy.waitForLoading();
