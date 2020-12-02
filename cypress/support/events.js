@@ -32,7 +32,7 @@ cy.events = {
         cy.get('accelify-student-in-progress-events-grid table').then(($body) => {
             if ($body.find('span.k-i-close').length) {
                 cy.get('span.k-i-close').each(() => {
-                    cy.get('span.k-i-close').eq(0).click();
+                    cy.get('span.k-i-close').eq(0).scrollIntoView().click({force: true});
                     cy.get('.ng-trigger-dialogSlideInAppear button').contains('Ok').click();
                     cy.waitForLoading();
                     cy.wait(2500);

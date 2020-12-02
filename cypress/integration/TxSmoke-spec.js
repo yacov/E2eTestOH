@@ -16,10 +16,10 @@ before(function () {
         cy.txDemoLogin(url);
     }
     if (url.includes('tx.acceliqc.com')) {
-        cy.txqclLogin(url);
+        cy.txqcLogin(url);
     }
     if (url.includes('tx.acceliplan.com')) {
-        cy.txqclLogin(url);
+        cy.txProdLogin(url);
     }
     Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
     cy.visit(`${url}/planng/Students/ViewStudent/${Cypress.env('txStudentId')}/Events/IEP`);
@@ -41,14 +41,18 @@ after(function () {
 
 describe('Smoke test of Annual meeting on  ' + url, function () {
 
-    it('Delete existing events', function () {
+    it.only('Delete existing events', function () {
         cy.events.deleteAllEvents();
     });
 
-    it('Create new Annual event and Enter into created event', function () {
+    it.only('Create new Annual event and Enter into created event', function () {
        cy.events.createEvent('ARD Annual Meeting');
     });
-
+    it.only('Fill and Distribute documents', function () {
+        formName = 'Distribution Manager';
+        cy.openFormSmokeNoWait(formName);
+        cy.fillForms.fillDM();
+    });
     it('Fill Present Levels', function () {
         formName = 'Present Levels';
         cy.openFormSmoke(formName);

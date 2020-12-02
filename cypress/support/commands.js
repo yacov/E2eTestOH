@@ -71,10 +71,10 @@ Cypress.Commands.add('getIframeBody', () => {
     }
 });
 
-Cypress.Commands.add('txqclLogin', (urll) => {
+Cypress.Commands.add('txQcLogin', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
-        cy.visit(urll + '/Login.aspx?ReturnUrl=%2fAcceliTrack/Home.aspx');
+        cy.visit(urll + '/Login.aspx?ReturnUrl=%2fplanng/Students/ViewStudent/289193/Events/IEP');
         cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
         cy.get(loginPage.passwordField).clear().type(Cypress.env('qcUsersPassword'));
         cy.get(loginPage.loginButton).click();
@@ -94,7 +94,7 @@ Cypress.Commands.add('txDemoLogin', (urll) => {
 Cypress.Commands.add('txProdLogin', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
-        cy.visit(urll + '/Login.aspx?ReturnUrl=%2fAcceliTrack/Home.aspx');
+        cy.visit(urll + '/Login.aspx?ReturnUrl=%2fplanng/Students/ViewStudent/289193/Events/IEP');
         cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
         cy.get(loginPage.passwordField).clear().type(Cypress.env('testUsersPassword'));
         cy.get(loginPage.loginButton).click();
