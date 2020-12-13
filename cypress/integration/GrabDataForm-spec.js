@@ -13,14 +13,16 @@ let nFormFieldDefinitionID;
 let aFormFieldDefinitionID;
 let nFormFieldDefinitionKey;
 let aFormFieldDefinitionKey;
+let out;
 let ineb;
 let iaeb;
 let grabbedData;
 let fullData = [];
 const ids = require('../fixtures/dataId.json')
-let fileNametxt = 'cypress/fixtures/form35.txt';
+let i2 = 6;
+let fileNametxt = `cypress/fixtures/formNew${i2}.txt`;
 let ind = 0;
-let i2 = 20;
+
 
 
 before(function () {
@@ -37,20 +39,27 @@ beforeEach(function () {
 
 after(function () {
     //  datastr.push([openPL, openCurr, physicalFA]);
-  //    cy.writeFile(fileNametxt, '}', {flag: 'a+'});
+    //    cy.writeFile(fileNametxt, '}', {flag: 'a+'});
     //  sendDatatoGoogle(datastr);
 
 })
 afterEach(function () {
-    const out = fullData.join(" ");
-    cy.writeFile(fileNametxt, out, {flag: 'a+'});
+    out = fullData.join(" ");
+    if(out.indexOf('Tier I:') > -1){
+        cy.writeFile(fileNametxt, out, {flag: 'a+'});
+    }
+    else{
+        cy.writeFile('cypress/fixtures/BadForm.txt', out, {flag: 'a+'});
+    }
+
+    fullData.length = 0;
+    out = "";
 })
 
 describe('Grab data', function () {
     ids.forEach((id, i, listt) => {
-        ind++;
+        //ind++;
         it('Open created event ang grab data', function () {
-
             ind++;
             let urlll = `https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=${id.EventId}#LREServiceAlternatives&formId=${id.FormId}`;
             //  let urlll = `http://tx-demo.accelidemo.com/plan/Events/ViewEvent?eventId=${id.EventId}#LREServiceAlternatives&formId=${id.FormId}`;
@@ -61,7 +70,7 @@ describe('Grab data', function () {
             // cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
             /*  cy.contains('Welcome to AcceliTrack provider area!', {timeout: 50000})*/
             cy.log('Open created event');
-            fullData.push(`"${id.FormId}":{`);
+
             // cy.writeFile('cypress/fixtures/form.txt', `"${id.FormId}":`, {flag: 'a+'});
             //cy.visit(url + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#EventOverview',{onBeforeLoad: spyOnAddEventListener
             //}).then(waitForAppStart);
@@ -77,6 +86,7 @@ describe('Grab data', function () {
                 cy.log('Index of Academic Educational Benefit is ' + aebb);
                 iaeb = aebb;
             });
+            fullData.push(`"${id.FormId}":{`);
             cy.xpath('//div[contains(@class,\'column\')][3]//span[@class=\'k-input\'][text()]//ancestor::div[contains(@class,\'clearfix\')]').each((elem, index, list) => {
                 cy.get(elem).xpath('./div[contains(@class,\'column\')][1]//div[contains(@class,\'lblField\')]').then((_rowName) => {
                     const field = _rowName.text().trim();
@@ -95,20 +105,25 @@ describe('Grab data', function () {
 
                             } else {
                                 grabbedData = `"${field}":{"Nonacademic Educational Benefit":{"Value":"${nebValue}"},"Academic Educational Benefit":{"Value":"${aebValue}"}}},`;
-                                if (ind === 20){
-                                    fileNametxt = 'cypress/fixtures/form'+(i2++)+'.txt';
-                                    ind = 0;
-                                }
+
                             }
                             fullData.push(grabbedData);
                         });
                     });
                 });
             });
-        });
 
+if(ind > 250){
+    i2++
+    fileNametxt = `cypress/fixtures/formNew${i2}.txt`;
+    cy.log(`${ind} forms grabbed, new outputData file is ${fileNametxt}`);
+    ind = 0;
+}
+else{
+    cy.log(`${ind} forms grabbed, outputData file is ${fileNametxt}`);
+}
 
     });
-
+    });
 
 });

@@ -322,3 +322,7 @@ Cypress.Commands.add('isElementExists', (loc) => {
         return a;
     });
 });
+
+Cypress.Commands.add('clearArray', (loc) => {
+    return loc = [];
+});

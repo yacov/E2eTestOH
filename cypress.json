@@ -9,7 +9,7 @@
     "eventURL2": "be30912e-bbec-44ce-88bb-ac5100717774",
     "eventURLProd": "cca6d61c-e1e3-482e-b0e9-ac66008f14c1",
     "eventURL": "5aa483f8-8879-4cff-99fe-ac3100956fd4",
-    "baseURL": "https://tx.acceliplan.com",
+    "baseURL": "https://tx.acceliqc.com",
     "baseDemoURL": "tx-demo.accelidemo.com",
     "prodBaseURL": "https://tx.acceliplan.com",
     "googleClientId": "846668157905-nk3qle36376fdcoaio77cul73ugiq41p.apps.googleusercontent.com",
@@ -22,5 +22,5 @@
   "pageLoadTimeout": 70000,
   "projectId": "bkopu8",
   "videoUploadOnPasses": false,
-  "retries": 1
+  "retries": 0
 }

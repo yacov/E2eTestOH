@@ -16,7 +16,7 @@ before(function () {
         cy.txDemoLogin(url);
     }
     if (url.includes('tx.acceliqc.com')) {
-        cy.txqcLogin(url);
+        cy.txQcLogin(url);
     }
     if (url.includes('tx.acceliplan.com')) {
         cy.txProdLogin(url);
@@ -41,14 +41,14 @@ after(function () {
 
 describe('Smoke test of Annual meeting on  ' + url, function () {
 
-    it.only('Delete existing events', function () {
+    it('Delete existing events', function () {
         cy.events.deleteAllEvents();
     });
 
-    it.only('Create new Annual event and Enter into created event', function () {
+    it('Create new Annual event and Enter into created event', function () {
        cy.events.createEvent('ARD Annual Meeting');
     });
-    it.only('Fill and Distribute documents', function () {
+    it('Fill and Distribute documents', function () {
         formName = 'Distribution Manager';
         cy.openFormSmokeNoWait(formName);
         cy.fillForms.fillDM();
