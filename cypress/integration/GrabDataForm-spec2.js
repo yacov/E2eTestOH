@@ -60,6 +60,14 @@ describe('Grab data', function () {
     ids.forEach((id, i, listt) => {
         //ind++;
         it('Open created event ang grab data', function () {
+            cy.readFile(fileNametxt).then(gf => {
+                const goodForms = gf;
+                cy.readFile('cypress/fixtures/BadForm.txt').then(bf => {
+                    const badForms = bf;
+
+                    if ((goodForms.indexOf(id.FormId) > -1) || ((badForms.indexOf(id.FormId) > -1))) {
+                        console.log('formId "' + id.FormId + '" already processed, moving to next one.')
+                    } else {
             ind++;
             let urlll = `https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=${id.EventId}#LREServiceAlternatives&formId=${id.FormId}`;
             //  let urlll = `http://tx-demo.accelidemo.com/plan/Events/ViewEvent?eventId=${id.EventId}#LREServiceAlternatives&formId=${id.FormId}`;
@@ -122,8 +130,11 @@ if(i > 250){
 else{
     cy.log(`${ind} forms grabbed, outputData file is ${fileNametxt}`);
 }
+                    }
+                });
+            });
+        });
 
-    });
     });
 
 });
