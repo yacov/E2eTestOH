@@ -3,7 +3,7 @@
 //todo Correct filling Accommodations
 //todo correct filling Services
 
-const url = Cypress.env('baseURL')
+const url = Cypress.env('baseQCURL')
 //const url = Cypress.env('baseDemoURL')
 let formLink;
 let formName;
@@ -103,13 +103,6 @@ describe('Smoke test of Annual meeting on  ' + url, function () {
         formName = 'Assistive Technology';
         cy.openFormSmokeNoWait(formName);
         cy.fillForms.fillAssistiveTech();
-    });
-
-    it('Fill Behavior Intervention Plan (BIP) Form', function () {
-        formName = 'Behavior Intervention Plan (BIP)';
-        cy.openFormSmoke(formName);
-        cy.fillForms.fillBehaviorInterventionPlan();
-        cy.fillForms.saveFormNormal();
     });
 
     it('Transportation', function () {

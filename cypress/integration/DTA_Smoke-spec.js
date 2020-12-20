@@ -15,7 +15,7 @@ beforeEach(function () {
 
 describe('Test DTA System Availability', function () {
     urls.forEach((url) => {
-        it('DTA system check on ' + url, function () {
+        it('DTA system check on ' + url,{retries: 1}, function () {
 
                 cy.manualLogin(url);
                 cy.log('Should display DTA site');
@@ -36,7 +36,7 @@ describe('Test DTA System Availability', function () {
         });
     });
 
-    it('DTA system check on https://tx.acceliplan.com/', function () {
+    it('DTA system check on https://tx.acceliplan.com/', {retries: 1},function () {
 
             urll = 'https://tx.acceliplan.com/'
             cy.manualLogin(urll);
@@ -56,7 +56,7 @@ describe('Test DTA System Availability', function () {
 
 
     });
-    it('DTA system check on https://dc.acceliplan.com/', function () {
+    it('DTA system check on https://dc.acceliplan.com/', {retries: 1},function () {
 
         urll = 'https://dc.acceliplan.com/'
         cy.manualLogin(urll);
@@ -76,7 +76,7 @@ describe('Test DTA System Availability', function () {
 
 
     });
-    it('DTA system check on https://dade.acceliplan.com/', function () {
+    it('DTA system check on https://dade.acceliplan.com/', {retries: 1},function () {
 
             urll = 'https://dade.acceliplan.com/'
             cy.manualLogin(urll);

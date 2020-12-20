@@ -18,9 +18,9 @@ let ineb;
 let iaeb;
 let grabbedData;
 let fullData = [];
-const ids = require('../fixtures/dataId.json')
-let i2 = 6;
-let fileNametxt = `cypress/fixtures/formNew${i2}.txt`;
+const ids = require('../fixtures/dataid/Forms1.json')
+let i2 = 25;
+let fileNametxt = `cypress/fixtures/Grab/Forms1.txt`;
 let ind = 0;
 
 
@@ -47,8 +47,10 @@ afterEach(function () {
     out = fullData.join(" ");
     if (out.indexOf('Tier I:') > -1) {
         cy.writeFile(fileNametxt, out, {flag: 'a+'});
+        cy.wait(1000)
     } else {
         cy.writeFile('cypress/fixtures/BadForm.txt', out, {flag: 'a+'});
+        cy.wait(1000)
     }
     fullData.length = 0;
     out = "";
@@ -60,6 +62,7 @@ describe('Grab data', function () {
         it('Open created event ang grab data', function () {
             ind++;
             let urlll = `https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=${id.EventId}#LREServiceAlternatives&formId=${id.FormId}`;
+            cy.log(urlll)
             //  let urlll = `http://tx-demo.accelidemo.com/plan/Events/ViewEvent?eventId=${id.EventId}#LREServiceAlternatives&formId=${id.FormId}`;
             cy.visit(urlll, {timeout: 180000})
             //   cy.wait('@openPage', {timeout: 180000}).then((xhr) => {
@@ -85,6 +88,7 @@ describe('Grab data', function () {
                 iaeb = aebb;
             });
             fullData.push(`"${id.FormId}":{`);
+            cy.wait(200)
             cy.xpath('//div[contains(@class,\'column\')][3]//span[@class=\'k-input\'][text()]//ancestor::div[contains(@class,\'clearfix\')]').each((elem, index, list) => {
                 cy.get(elem).xpath('./div[contains(@class,\'column\')][1]//div[contains(@class,\'lblField\')]').then((_rowName) => {
                     const field = _rowName.text().trim();
@@ -106,16 +110,14 @@ describe('Grab data', function () {
 
                             }
                             fullData.push(grabbedData);
+                            cy.wait(200)
                         });
                     });
                 });
             });
 
             if (ind > 250) {
-                i2++
-                fileNametxt = `cypress/fixtures/formNew${i2}.txt`;
                 cy.log(`${ind} forms grabbed, new outputData file is ${fileNametxt}`);
-                ind = 0;
             } else {
                 cy.log(`${ind} forms grabbed, outputData file is ${fileNametxt}`);
             }
