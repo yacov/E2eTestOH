@@ -52,10 +52,11 @@ cy.events = {
         cy.contains(eventName).click();
         cy.waitForLoading();
         cy.contains('accelify-create-student-event-modal button', 'Save').click();
+cy.contains('Error creating an event on the server side.').should('not.exist')
         cy.server()
         cy.route('POST', '**/events').as('createEvent');
         cy.wait('@createEvent', {timeout: 270000}).then((xhr) => {
-            // expect(xhr.status).to.equal(200);
+            expect(xhr.status).to.equal(200);
             expect(xhr, 'has duration in ms').to.have.property('duration').and.be.a('number');
             //  expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
 
