@@ -77,6 +77,26 @@ cy.contains('Error creating an event on the server side.').should('not.exist')
                 cy.writeFile('cypress/fixtures/forms.json', xhr.responseBody)
             });
 
+    },
+    visitEvent: (eventName) => {
+        cy.visit(`${Cypress.env('baseURL')}/planng/Students/ViewStudent/${Cypress.env('txStudentId')}/Events/IEP`);
+        cy.waitForLoading();
+        cy.wait(2500);
+        cy.get('accelify-student-in-progress-events-grid table').contains('a', eventName).should('have.attr', 'href').then((href) => {
+            const a = Cypress.env('baseURL') + href
+            cy.log('Url generated is' + a)
+            cy.writeFile('cypress/fixtures/fullUrl.txt', a)
+            cy.visit(a + '#EventOverview');
+        })
+        cy.server()
+        cy.route('POST', '**/Events/GetEventOverview').as('openEvent');
+        cy.wait('@openEvent', {timeout: 170000}).then((xhr) => {
+            //  expect(xhr.status).to.equal(200);
+            expect(xhr, 'has duration in ms').to.have.property('duration').and.be.a('number');
+            expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
+            cy.writeFile('cypress/fixtures/forms.json', xhr.responseBody)
+        });
+
     }
 
 

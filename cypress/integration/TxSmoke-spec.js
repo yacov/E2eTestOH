@@ -45,53 +45,54 @@ describe('Smoke test of Annual meeting on  ' + url, function () {
         cy.events.deleteAllEvents();
     });
 
-    it('Create new Annual event and Enter into created event', function () {
-       cy.events.createEvent('ARD Annual Meeting');
+    it.only('Create new Annual event and Enter into created event', function () {
+cy.events.visitEvent('ARD Annual Meeting');
+      // cy.events.createEvent('ARD Annual Meeting');
     });
-    it('Fill and Distribute documents', function () {
+    it.only('Fill and Distribute documents', function () {
         formName = 'Distribution Manager';
         cy.openFormSmokeNoWait(formName);
         cy.fillForms.fillDM();
     });
-    it('Fill Present Levels', function () {
+    it.only('Fill Present Levels', function () {
         formName = 'Present Levels';
         cy.openFormSmoke(formName);
-        cy.fillForms.fillPresentLevels();
+        //cy.fillForms.fillPresentLevels();
         cy.fillForms.saveFormNormal();
     });
 
-    it('Fill Curriculum and Learning Form', function () {
+    it.only('Fill Curriculum and Learning Form', function () {
         formName = "Curriculum and Learning Environment";
         cy.openFormSmoke(formName);
-        cy.fillForms.fillPLCurriculum();
+       // cy.fillForms.fillPLCurriculum();
         cy.fillForms.saveFormNormal();
     });
 
-    it('Fill Social or Emotional Behavior Form', function () {
+    it.only('Fill Social or Emotional Behavior Form', function () {
         formName = "Social or Emotional Behavior";
         cy.openFormSmoke(formName);
-        cy.fillForms.fillPLSocialEmotional();
+       // cy.fillForms.fillPLSocialEmotional();
         cy.fillForms.saveFormNormal();
     });
 
-    it('Fill Independent Functioning Form', function () {
+    it.only('Fill Independent Functioning Form', function () {
         formName = "Independent Functioning";
         cy.openFormSmoke(formName);
-        cy.fillForms.fillPLIndependent();
+       // cy.fillForms.fillPLIndependent();
         cy.fillForms.saveFormNormal();
     });
 
-    it('Fill Health Care Form', function () {
+    it.only('Fill Health Care Form', function () {
         formName = "Health Care";
         cy.openFormSmoke(formName);
-        cy.fillForms.fillPLHealth();
+       // cy.fillForms.fillPLHealth();
         cy.fillForms.saveFormNormal();
     });
 
-    it('Fill Communication Form', function () {
+    it.only('Fill Communication Form', function () {
         formName = "Communication";
         cy.openFormSmoke(formName);
-        cy.fillForms.fillPLCommmunication();
+       // cy.fillForms.fillPLCommmunication();
         cy.fillForms.saveFormNormal();
     });
 
@@ -114,10 +115,10 @@ describe('Smoke test of Annual meeting on  ' + url, function () {
         cy.fillForms.saveFormNormal();
     });
 
-    it('Fill ARD Data Form', function () {
+    it.only('Fill ARD Data Form', function () {
         formName = 'ARD Data';
         cy.openFormSmoke(formName);
-        cy.fillForms.fillData();
+       // cy.fillForms.fillData();
         cy.fillForms.saveFormNormal();
     });
 
@@ -137,7 +138,7 @@ describe('Smoke test of Annual meeting on  ' + url, function () {
     });
 
 
-    it('Fill STAAR Participation Form', function () {
+    it.only('Fill STAAR Participation Form', function () {
         formName = 'STAAR Participation';
         cy.openFormSmoke(formName);
         cy.fillForms.fillSTAARParticipation();

@@ -1,12 +1,26 @@
-
+//const url = "http://tx-demo.accelidemo.com"
+//const url = Cypress.env('baseURL')
+let formLink;
+let formName;
+let appHasStarted;
+let datastr = [];
+let openPL;
+let openCurr;
+let physicalFA;
+let openPL2;
+let openCurr2;
+let nFormFieldDefinitionID;
+let aFormFieldDefinitionID;
+let nFormFieldDefinitionKey;
+let aFormFieldDefinitionKey;
 let out;
 let ineb;
 let iaeb;
 let grabbedData;
 let fullData = [];
-const ids = require('../fixtures/dataid/Forms11.json')
+const ids = require('../fixtures/dataid/Forms18.json')
 let i2 = 25;
-let fileNametxt = `cypress/fixtures/Grab/Forms11.txt`;
+let fileNametxt = `cypress/fixtures/Grab/Forms18.txt`;
 let ind = 0;
 
 
@@ -45,7 +59,7 @@ afterEach(function () {
 describe('Grab data', function () {
     ids.forEach((id, i, listt) => {
         //ind++;
-        it('Open created event ang grab data for Form '+id.FormId, function () {
+        it('Open created event ang grab data', function () {
             ind++;
             let urlll = `https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=${id.EventId}#LREServiceAlternatives&formId=${id.FormId}`;
             cy.log(urlll)
