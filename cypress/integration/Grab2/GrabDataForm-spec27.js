@@ -4,9 +4,9 @@ let ineb;
 let iaeb;
 let grabbedData;
 let fullData = [];
-const ids = require('../fixtures/dataid/Forms21.json')
+const ids = require('../fixtures/dataid/form27.json')
 let i2 = 25;
-let fileNametxt = `cypress/fixtures/Grab/Forms21.txt`;
+let fileNametxt = `cypress/fixtures/Grab/Forms27.json`;
 let ind = 0;
 
 
@@ -45,7 +45,7 @@ afterEach(function () {
 describe('Grab data', function () {
     ids.forEach((id, i, listt) => {
         //ind++;
-        it('Open created event ang grab data for Form '+id.FormId, function () {
+        it('Open created event and grab data for Form '+id.FormId, function () {
             ind++;
             let urlll = `https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=${id.EventId}#LREServiceAlternatives&formId=${id.FormId}`;
             cy.log(urlll)
