@@ -5,7 +5,7 @@
 
 const url = Cypress.env('baseURL')
 //const url = Cypress.env('baseDemoURL')
-let formLink;
+let eventLink;
 let formName;
 let appHasStarted
 let eventId;
@@ -22,7 +22,8 @@ before(function () {
         cy.txProdLogin(url);
     }
     Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
-    cy.visit(`${url}/planng/Students/ViewStudent/${Cypress.env('txStudentId')}/Events/IEP`);
+    const addr = `${url}/planng/Students/ViewStudent/${Cypress.env('txStudentId')}/Events/IEP`
+    cy.visit(addr);
     cy.waitForLoading();
     cy.wait(2500);
 });
@@ -32,6 +33,7 @@ beforeEach(function () {
     cy.route('POST', '**/Events/UpdateForm').as('savePage');
     cy.route('POST', '**/Events/GetEventOverview').as('openEvent');
     Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
+    eventLink = cy.getFullUrl();
 });
 
 after(function () {
@@ -41,13 +43,13 @@ after(function () {
 
 describe('Smoke test of Annual meeting on  ' + url, function () {
 
-    it('Delete existing events', function () {
+    it.only('Delete existing events', function () {
         cy.events.deleteAllEvents();
     });
 
     it.only('Create new Annual event and Enter into created event', function () {
-cy.events.visitEvent('ARD Annual Meeting');
-      // cy.events.createEvent('ARD Annual Meeting');
+//cy.events.visitEvent('ARD Annual Meeting');
+       cy.events.createEvent('ARD Annual Meeting');
     });
     it.only('Fill and Distribute documents', function () {
         formName = 'Distribution Manager';
@@ -57,42 +59,42 @@ cy.events.visitEvent('ARD Annual Meeting');
     it.only('Fill Present Levels', function () {
         formName = 'Present Levels';
         cy.openFormSmoke(formName);
-        //cy.fillForms.fillPresentLevels();
+        cy.fillForms.fillPresentLevels();
         cy.fillForms.saveFormNormal();
     });
 
     it.only('Fill Curriculum and Learning Form', function () {
         formName = "Curriculum and Learning Environment";
         cy.openFormSmoke(formName);
-       // cy.fillForms.fillPLCurriculum();
+        cy.fillForms.fillPLCurriculum();
         cy.fillForms.saveFormNormal();
     });
 
     it.only('Fill Social or Emotional Behavior Form', function () {
         formName = "Social or Emotional Behavior";
         cy.openFormSmoke(formName);
-       // cy.fillForms.fillPLSocialEmotional();
+        cy.fillForms.fillPLSocialEmotional();
         cy.fillForms.saveFormNormal();
     });
 
     it.only('Fill Independent Functioning Form', function () {
         formName = "Independent Functioning";
         cy.openFormSmoke(formName);
-       // cy.fillForms.fillPLIndependent();
+        cy.fillForms.fillPLIndependent();
         cy.fillForms.saveFormNormal();
     });
 
     it.only('Fill Health Care Form', function () {
         formName = "Health Care";
         cy.openFormSmoke(formName);
-       // cy.fillForms.fillPLHealth();
+        cy.fillForms.fillPLHealth();
         cy.fillForms.saveFormNormal();
     });
 
     it.only('Fill Communication Form', function () {
         formName = "Communication";
         cy.openFormSmoke(formName);
-       // cy.fillForms.fillPLCommmunication();
+       cy.fillForms.fillPLCommmunication();
         cy.fillForms.saveFormNormal();
     });
 

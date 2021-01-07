@@ -19,7 +19,7 @@ cy.fillForms = {
         cy.get('#pnlEventOtherForms input.selector-checkbox').eq(5).check({force: true});
         cy.get('#btnDistribute').click({force: true});
 //check distr pop-up
-        cy.contains('strong.slideIn','Distribution ready',{timeout: 60000});
+        cy.contains('strong.slideIn','Distribution ready',{timeout: 240000});
         //check distr attempts
       //  cy.get('#pnlDistributionAttempt a.k-pager-refresh').click();
       //  cy.wait(1500)

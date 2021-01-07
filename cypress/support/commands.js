@@ -151,9 +151,22 @@ Cypress.Commands.add('openForm', (formFullName,uurll) => {
         }
     })
 });
+Cypress.Commands.add('checkRes', (namr,link = 'Grab/Forms1.json') => {
+    return cy.fixture(link).then((forms) => {
+        for (var i = 0; i < forms.Items.length; i++) {
+            if(forms.Items[i].namr.its.length) {
+               cy.log('Form '+namr+' exists')
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    })
+});
 Cypress.Commands.add('getFullUrl', () => {
-     cy.fixture('fullUrl').then((fullUrl) => {
-         return fullUrl.urll;
+     cy.fixture('fullUrl.txt').then((fullUrl) => {
+         return fullUrl;
     })
 });
 
@@ -208,6 +221,14 @@ Cypress.Commands.add('openFormSmokeNoWait', (formFullName) => {
 Cypress.Commands.add('getFormLink', (urll) => {
 
         const link = cy.get(`[data-title=\'${urll}\'] span a.k-link`).invoke('attr', 'href');
+    cy.log(link)
+    return link;
+
+});
+
+Cypress.Commands.add('getTיןדFormLink', (urll) => {
+
+    const link = cy.get(`[data-title=\'${urll}\'] span a.k-link`).invoke('attr', 'href');
     cy.log(link)
     return link;
 

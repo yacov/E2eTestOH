@@ -97,6 +97,11 @@ cy.contains('Error creating an event on the server side.').should('not.exist')
             cy.writeFile('cypress/fixtures/forms.json', xhr.responseBody)
         });
 
+    },
+    getFullUrl: () => {
+        cy.readFile('cypress/fixtures/fullUrl.txt').then(u =>{
+            return u;
+        })
     }
 
 
