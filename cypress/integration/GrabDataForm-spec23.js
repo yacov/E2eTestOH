@@ -4,9 +4,9 @@ let ineb;
 let iaeb;
 let grabbedData;
 let fullData = [];
-const ids = require('../../fixtures/dataid/form9.json')
+const ids = require('../fixtures/dataid/form23.json')
 let i2 = 25;
-let fileNametxt = `cypress/fixtures/Grab/Forms9.json`;
+let fileNametxt = `cypress/fixtures/Grab/Forms23.json`;
 let ind = 0;
 
 

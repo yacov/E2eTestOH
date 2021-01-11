@@ -74,7 +74,7 @@ Cypress.Commands.add('getIframeBody', () => {
 Cypress.Commands.add('txQcLogin', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
-        cy.visit(urll + `/Login.aspx?ReturnUrl=%2fplanng/Students/ViewStudent/${Cypress.env('txStudentId')}/Events/IEP`);
+        cy.visit(urll + `/Login.aspx`, {timeout: 60000});
         cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
         cy.get(loginPage.passwordField).clear().type(Cypress.env('qcUsersPassword'));
         cy.get(loginPage.loginButton).click();

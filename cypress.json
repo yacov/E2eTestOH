@@ -12,7 +12,7 @@
     "eventURL2": "be30912e-bbec-44ce-88bb-ac5100717774",
     "eventURLProd": "cca6d61c-e1e3-482e-b0e9-ac66008f14c1",
     "eventURL": "5aa483f8-8879-4cff-99fe-ac3100956fd4",
-    "baseURL": "https://tx.acceliqc.com",
+    "baseURL": "https://tx-acc.ss.frontlineeducation.com",
     "baseQCURL": "https://dade.acceliqc.com",
     "baseRCURL": "https://dade.acceliqc.com",
     "baseDemoURL": "tx-demo.accelidemo.com",
