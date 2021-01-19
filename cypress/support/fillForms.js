@@ -15,8 +15,8 @@ cy.fillForms = {
        // cy.contains('.k-notification[data-role=\'alert\']','Form has been updated successfully').should('be.visible');
     },
     fillDM: () => {
-        cy.get('#pnlDistributeTo table input.includeTemplate').eq(1).check({force: true});
-        cy.get('#pnlEventOtherForms input.selector-checkbox').eq(5).check({force: true});
+        cy.get('#pnlDistributeTo table input.includeTemplate').eq(0).check({force: true});
+        cy.get('#pnlEventOtherForms input.selector-checkbox').eq(4).check({force: true});
         cy.get('#btnDistribute').click({force: true});
 //check distr pop-up
         cy.contains('strong.slideIn','Distribution ready',{timeout: 240000});

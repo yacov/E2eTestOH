@@ -81,12 +81,22 @@ Cypress.Commands.add('txQcLogin', (urll) => {
     })
 });
 
+Cypress.Commands.add('txSSLogin', (urll) => {
+    return cy.fixture('pages').then((pages) => {
+        const loginPage = pages.loginPage;
+        cy.visit(urll + `/Login.aspx`, {timeout: 60000});
+        cy.get(loginPage.usernameField).clear().type(Cypress.env('testQCUserName'));
+        cy.get(loginPage.passwordField).clear().type(Cypress.env('testQCUserPassword'));
+        cy.get(loginPage.loginButton).click();
+    })
+});
+
 Cypress.Commands.add('dadeQcLogin', (urll, studentId = Cypress.env('dadeQcStudentId')) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
-        cy.visit(urll + `/Login.aspx?ReturnUrl=%2fplanng/Students/ViewStudent/${studentId}/Events/IEP`);
-        cy.get(loginPage.usernameField).clear().type(Cypress.env('testQCUserName'));
-        cy.get(loginPage.passwordField).clear().type(Cypress.env('testQCUserPassword'));
+        cy.visit(urll + `/Login.aspx`);
+        cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
+        cy.get(loginPage.passwordField).clear().type(Cypress.env('testUsersPassword'));
         cy.get(loginPage.loginButton).click();
     })
 });

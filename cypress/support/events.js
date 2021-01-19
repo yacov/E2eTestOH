@@ -30,7 +30,7 @@ cy.events = {
     deleteAllEvents: () => {
         cy.waitForLoading();
         cy.get('accelify-student-in-progress-events-grid table').then(($body) => {
-            if ($body.find('span.k-i-close').length) {
+            if ($body.find('span.k-i-close').length > -1) {
                 cy.get('span.k-i-close').each(() => {
                     cy.get('span.k-i-close').eq(0).scrollIntoView().click({force: true});
                     cy.get('.ng-trigger-dialogSlideInAppear button').contains('Ok').click();
@@ -57,8 +57,8 @@ cy.contains('Error creating an event on the server side.').should('not.exist')
         cy.route('POST', '**/events').as('createEvent');
         cy.wait('@createEvent', {timeout: 270000}).then((xhr) => {
             expect(xhr.status).to.equal(200);
-            expect(xhr, 'has duration in ms').to.have.property('duration').and.be.a('number');
-            //  expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
+           // expect(xhr, 'has duration in ms').to.have.property('duration').and.be.a('number');
+          //  expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
 
         });
         cy.waitForLoading();

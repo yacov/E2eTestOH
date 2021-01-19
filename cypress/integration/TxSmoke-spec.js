@@ -15,8 +15,11 @@ before(function () {
     if (url.includes('demo')) {
         cy.txDemoLogin(url);
     }
-    if (url.includes('tx.acceliqc.com')||url.includes('tx-acc.ss.frontlineeducation.com')) {
+    if (url.includes('tx.acceliqc.com')) {
         cy.txQcLogin(url);
+    }
+    if (url.includes('tx-acc.ss.frontlineeducation.com')) {
+        cy.txSSLogin(url);
     }
     if (url.includes('tx.acceliplan.com')) {
         cy.txProdLogin(url);
@@ -37,8 +40,8 @@ beforeEach(function () {
 });
 
 after(function () {
-    // cy.writeFile('cypress/fixtures/forms.json', '{}')
- //   cy.writeFile('cypress/fixtures/fullUrl.txt', '')
+    cy.writeFile('cypress/fixtures/forms.json', '{}')
+ cy.writeFile('cypress/fixtures/fullUrl.txt', '')
 })
 
 describe('Smoke test of Annual meeting on  ' + url, function () {

@@ -3,7 +3,7 @@
 //todo Correct filling Accommodations
 //todo correct filling Services
 
-const url = Cypress.env('baseQCURL')
+const url = Cypress.env('baseDadeProdURL')
 //const url = Cypress.env('baseDemoURL')
 let formLink;
 let formName;
@@ -24,8 +24,11 @@ before(function () {
     if (url.includes('dade.acceliqc.com')) {
         cy.txProdLogin(url);
     }
+    if (url.includes('dade.acceliplan.com')) {
+        cy.dadeQcLogin(url);
+    }
     Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
-    cy.visit(`${url}/plan/Students/ViewStudent?commonStudentId=${Cypress.env('dadeQcStudentId')}&studentViewType=Events&programType=IEP`);
+    cy.visit(`${url}/plan/Students/ViewStudent?commonStudentId=${Cypress.env('dadeQcStudentId')}&studentViewType=Events&programType=IEP`, {timeout:60000});
     cy.waitForLoading();
     cy.wait(2500);
 });
