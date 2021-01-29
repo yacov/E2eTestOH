@@ -1,0 +1,28 @@
+{"dadeRC": {
+  "url": "https://dade-rc.acceliplan.com",
+  "studentId": "221081",
+  "events": {
+    "IEPAnnual": {
+      "eventName": "IEP Initial Eligibility and Initial Meeting",
+      "gid": "773149348"
+    },
+    "IEPInitial": {
+      "eventName": "IEP Annual Meeting",
+      "gid": "0"
+    }
+  }
+}, "TXQC": {
+    "url": "https://tx.acceliqc.com",
+    "studentId": "119782",
+    "events": {
+      "IEPAnnual": {
+        "eventName": "ARD Annual Meeting",
+        "gid": "2090356156"
+      },
+      "IEPInitial": {
+        "eventName": "ARD Initial Meeting",
+        "gid": "1102433162"
+      }
+    }
+  }
+}

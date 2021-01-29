@@ -75,8 +75,8 @@ Cypress.Commands.add('txQcLogin', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
         cy.visit(urll + `/Login.aspx`, {timeout: 60000});
-        cy.get(loginPage.usernameField).clear().type(Cypress.env('testUserName'));
-        cy.get(loginPage.passwordField).clear().type(Cypress.env('qcUsersPassword'));
+        cy.get(loginPage.usernameField).clear().type(Cypress.env('testQCUserName'));
+        cy.get(loginPage.passwordField).clear().type(Cypress.env('testQCUserPassword'));
         cy.get(loginPage.loginButton).click();
     })
 });
@@ -101,6 +101,8 @@ Cypress.Commands.add('dadeQcLogin', (urll, studentId = Cypress.env('dadeQcStuden
     })
 });
 
+
+
 Cypress.Commands.add('txDemoLogin', (urll) => {
     return cy.fixture('pages').then((pages) => {
         const loginPage = pages.loginPage;
@@ -122,7 +124,7 @@ Cypress.Commands.add('txProdLogin', (urll) => {
 });
 
 Cypress.Commands.add('loginif', () => {
-    if(cy.url().contains('login.aspx')){
+    if (cy.url().contains('login.aspx')) {
         cy.get('#UserName').clear().type(Cypress.env('testUserName'));
         cy.get('#Password').clear().type(Cypress.env('testUsersPassword'));
         cy.get('#lnkLogin').click();
@@ -139,15 +141,15 @@ Cypress.Commands.add('login', (urll) => {
     })
 });
 
-Cypress.Commands.add('openForm', (formFullName,uurll) => {
+Cypress.Commands.add('openForm', (formFullName, uurll) => {
     return cy.fixture('forms').then((forms) => {
         for (var i = 0; i < forms.Items.length; i++) {
-            if(forms.Items[i].Name === formFullName) {
-                cy.log('Form '+formFullName+' found in the list.')
+            if (forms.Items[i].Name === formFullName) {
+                cy.log('Form ' + formFullName + ' found in the list.')
                 const formdid = forms.Items[i].FormId;
                 const sectionName = forms.Items[i].EventSection;
                 const uurl = uurll + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#' + sectionName + '&formId=' + formdid;
-                cy.log('url of the form '+ formFullName+ 'is '+uurl);
+                cy.log('url of the form ' + formFullName + 'is ' + uurl);
                 cy.server();
                 cy.route('POST', '**/Events/ViewForm').as('openPage');
                 cy.visit(uurl);
@@ -156,41 +158,39 @@ Cypress.Commands.add('openForm', (formFullName,uurll) => {
                     expect(xhr, 'has duration in ms').to.have.property('duration').and.be.a('number');
                     //  expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
                 });
-              cy.contains('.k-notification-error','An error has occurred').should('not.exist');
+                cy.contains('.k-notification-error', 'An error has occurred').should('not.exist');
             }
         }
     })
 });
-Cypress.Commands.add('checkRes', (namr,link = 'Grab/Forms1.json') => {
+Cypress.Commands.add('checkRes', (namr, link = 'Grab/Forms1.json') => {
     return cy.fixture(link).then((forms) => {
         for (var i = 0; i < forms.Items.length; i++) {
-            if(forms.Items[i].namr.its.length) {
-               cy.log('Form '+namr+' exists')
+            if (forms.Items[i].namr.its.length) {
+                cy.log('Form ' + namr + ' exists')
                 return true;
-            }
-            else{
+            } else {
                 return false;
             }
         }
     })
 });
 Cypress.Commands.add('getFullUrl', () => {
-     cy.fixture('fullUrl.txt').then((fullUrl) => {
-         return fullUrl;
+    cy.fixture('fullUrl.txt').then((fullUrl) => {
+        return fullUrl;
     })
 });
 
 Cypress.Commands.add('openFormSmoke', (formFullName) => {
     return cy.fixture('forms').then((forms) => {
         for (var i = 0; i < forms.Items.length; i++) {
-            if(forms.Items[i].Name === formFullName) {
-                cy.log('Form '+formFullName+' found in the list.')
+            if (forms.Items[i].Name === formFullName) {
+                cy.log('Form ' + formFullName + ' found in the list.')
                 const formdid = forms.Items[i].FormId;
                 const sectionName = forms.Items[i].EventSection;
-                cy.readFile('cypress/fixtures/fullUrl.txt').then(u =>{
-                    const uu = u;
-                    const uurl = uu + '#' + sectionName + '&formId=' + formdid;
-                    cy.log('url of the form '+ formFullName+ 'is '+uurl);
+                cy.readFile('cypress/fixtures/fullUrl.txt').then(u => {
+                    const uurl = u + '#' + sectionName + '&formId=' + formdid;
+                    cy.log('url of the form ' + formFullName + 'is ' + uurl);
                     cy.server();
                     cy.route('POST', '**/Events/ViewForm').as('openPage');
                     cy.visit(uurl);
@@ -199,7 +199,7 @@ Cypress.Commands.add('openFormSmoke', (formFullName) => {
                         expect(xhr, 'has duration in ms').to.have.property('duration').and.be.a('number');
                         expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(25000);
                     });
-                    cy.contains('.k-notification-error','An error has occurred').should('not.exist');
+                    cy.contains('.k-notification-error', 'An error has occurred').should('not.exist');
                 });
             }
 
@@ -208,19 +208,74 @@ Cypress.Commands.add('openFormSmoke', (formFullName) => {
 
 });
 
+Cypress.Commands.add('openFormPerf', () => {
+    let datastr1 = [];
+     cy.fixture('forms').then(forms => {
+        for (var i = 0; i < forms.Items.length; i++) {
+            cy.readFile('cypress/fixtures/fullUrl.txt').then(u => {
+                const uurl = u + '#' + forms.Items[i].sectionName + '&formId=' + forms.Items[i].formdid;
+                cy.log('url of the form ' + forms.Items[i].formFullName + ' is ' + uurl);
+                cy.visit(uurl,{
+                    onBeforeLoad: (win) => {
+                        win.performance.mark('start-loading')
+                    },
+                    onLoad: (win) => {
+                        win.performance.mark('end-loading')
+                    },
+                }).its('performance').then((p) => {
+                    p.measure('pageLoad', 'start-loading', 'end-loading')
+                    var measure = p.getEntriesByName('pageLoad')[0]
+                    var openPL = measure.duration.toFixed(2);
+                    datastr1.push(forms.Items[i].formFullName, openPL)
+                    cy.log(datastr1[0].toString())
+                    cy.log(datastr1[1].toString())
+                    // assert.isAtMost(measure.duration, 1000)
+                });
+                cy.contains('.k-notification-error', 'An error has occurred').should('not.exist');
+            });
+
+            cy.get('body').then(($body) => {
+                if ($body.find('btnUpdateForm').length > -1) {
+                    cy.get('a#btnUpdateForm').click();
+                    cy.wait('@savePage', {timeout: 170000}).then((xhr) => {
+                        // expect(xhr.status).to.equal(200);
+                        expect(xhr, 'has duration in ms').to.have.property('duration').and.not.to.be.greaterThan(15000);
+                        const savePerf = xhr.duration.toFixed(2);
+                        datastr1.push([savePerf]);
+                        // datastr1.length.should.equal(3);
+                        //cy.log(datastr1[2])
+                    });
+                    cy.contains('.k-notification-error', 'An error has occurred').should('not.exist');
+                    // cy.getCurrentBuild()
+                } else {
+                    cy.log(`Form ${formFullName} cannot be saved`);
+                    datastr1.push("N/A");
+                }
+                cy.writeFile('cypress/fixtures/FormPerf.json', {
+                    name: datastr1[0],
+                    openTime: datastr1[1],
+                    savetime: datastr1[2]
+                }, {flag: 'a+'});
+                cy.writeFile('cypress/fixtures/FormPerf.json', ",", {flag: 'a+'});
+                // sendDatatoGoogle(datastr);
+                datastr1.length = 0;
+            });
+        }
+        });
+});
+
 Cypress.Commands.add('openFormSmokeNoWait', (formFullName) => {
     return cy.fixture('forms').then((forms) => {
         for (var i = 0; i < forms.Items.length; i++) {
-            if(forms.Items[i].Name === formFullName) {
-                cy.log('Form '+formFullName+' found in the list.')
+            if (forms.Items[i].Name === formFullName) {
+                cy.log('Form ' + formFullName + ' found in the list.')
                 const formdid = forms.Items[i].FormId;
                 const sectionName = forms.Items[i].EventSection;
-                cy.readFile('cypress/fixtures/fullUrl.txt').then(u =>{
-                    const uu = u;
-                    const uurl = uu + '#' + sectionName + '&formId=' + formdid;
-                    cy.log('url of the form '+ formFullName+ 'is '+uurl);
+                cy.readFile('cypress/fixtures/fullUrl.txt').then(u => {
+                    const uurl = u + '#' + sectionName + '&formId=' + formdid;
+                    cy.log('url of the form ' + formFullName + 'is ' + uurl);
                     cy.visit(uurl);
-                    cy.contains('.k-notification-error','An error has occurred').should('not.exist');
+                    cy.contains('.k-notification-error', 'An error has occurred').should('not.exist');
                 });
             }
 
@@ -230,56 +285,49 @@ Cypress.Commands.add('openFormSmokeNoWait', (formFullName) => {
 
 Cypress.Commands.add('getFormLink', (urll) => {
 
-        const link = cy.get(`[data-title=\'${urll}\'] span a.k-link`).invoke('attr', 'href');
-    cy.log(link)
-    return link;
-
-});
-
-Cypress.Commands.add('getTיןדFormLink', (urll) => {
-
     const link = cy.get(`[data-title=\'${urll}\'] span a.k-link`).invoke('attr', 'href');
     cy.log(link)
     return link;
 
 });
 
-Cypress.Commands.add('selectNth', { prevSubject: 'element' }, (subject, pos) => {
-        cy.wrap(subject)
-            .children('option')
-            .eq(pos)
-            .then(e => {
-                cy.wrap(subject).select(e.val(),{force: true})
-            })
-    });
+
+Cypress.Commands.add('selectNth', {prevSubject: 'element'}, (subject, pos) => {
+    cy.wrap(subject)
+        .children('option')
+        .eq(pos)
+        .then(e => {
+            cy.wrap(subject).select(e.val(), {force: true})
+        })
+});
 
 Cypress.Commands.add("selectNth2", (select, pos) => {
     cy.get(`${select} option +option`)
         .eq(pos)
-        .then( e => {
+        .then(e => {
             cy.get(select)
-                .select(e.val(),{force: true})
+                .select(e.val(), {force: true})
         })
 })
 
 Cypress.Commands.add("getCurrentBuild", () => {
     let build = cy.get('span.version').text();
-    build = build.replace(/\D/g,'');
-    cy.log('current build is '+build);
+    build = build.replace(/\D/g, '');
+    cy.log('current build is ' + build);
     return build;
 
 })
 
 Cypress.Commands.add('openFormAndMeasure', (formFullName) => {
-     cy.fixture('forms').then((forms) => {
-         var measuret;
+    cy.fixture('forms').then((forms) => {
+        var measuret;
         for (var i = 0; i < forms.Items.length; i++) {
-            if(forms.Items[i].Name === formFullName) {
-                cy.log('Form '+formFullName+' found in the list.')
+            if (forms.Items[i].Name === formFullName) {
+                cy.log('Form ' + formFullName + ' found in the list.')
                 const formdid = forms.Items[i].FormId;
                 const sectionName = forms.Items[i].EventSection;
                 const uurl = Cypress.env('baseURL') + '/plan/Events/ViewEvent?eventId=' + Cypress.env('eventURL') + '#' + sectionName + '&formId=' + formdid;
-                cy.log('url of the form '+ formFullName+ 'is '+uurl);
+                cy.log('url of the form ' + formFullName + 'is ' + uurl);
                 cy.server();
                 cy.route('POST', '**/Events/ViewForm').as('openPage');
                 cy.visit(uurl, {
@@ -294,7 +342,7 @@ Cypress.Commands.add('openFormAndMeasure', (formFullName) => {
                     const measure = p.getEntriesByName('pageLoad')[0]
                     measuret = measure.duration;
 
-                   // assert.isAtMost(measure.duration, 1000)
+                    // assert.isAtMost(measure.duration, 1000)
                 });
             }
         }
@@ -305,35 +353,34 @@ Cypress.Commands.add('openFormAndMeasure', (formFullName) => {
 Cypress.Commands.add('openPageAndMeasure', (uurl) => {
     cy.fixture('forms').then((forms) => {
         let measuret;
-                cy.visit(uurl,{timeout:170000}, {
-                    onBeforeLoad: (win) => {
-                        win.performance.mark('start-loading')
-                    },
-                    onLoad: (win) => {
-                        win.performance.mark('end-loading')
-                    },
-                }).its('performance').then((p) => {
-                    p.measure('pageLoad', 'start-loading', 'end-loading')
-                    const measure = p.getEntriesByName('pageLoad')[0]
-                    measuret = measure.duration;
-                    cy.log('Page load time is '+ measuret)
-                    // assert.isAtMost(measure.duration, 1000)
-                });
+        cy.visit(uurl, {timeout: 170000}, {
+            onBeforeLoad: (win) => {
+                win.performance.mark('start-loading')
+            },
+            onLoad: (win) => {
+                win.performance.mark('end-loading')
+            },
+        }).its('performance').then((p) => {
+            p.measure('pageLoad', 'start-loading', 'end-loading')
+            const measure = p.getEntriesByName('pageLoad')[0]
+            measuret = measure.duration;
+            cy.log('Page load time is ' + measuret)
+            // assert.isAtMost(measure.duration, 1000)
+        });
         return measuret;
     })
 });
 
 Cypress.Commands.add('getColumnIndex', (uurl) => {
-   let indexx = 0;
+    let indexx = 0;
     cy.get('div.lblField [style=\'text-align:center;\']').then(($el) => {
         // $el is a wrapped jQuery element
         const teext = $el.invoke('text');
-        if (teext===uurl) {
-          cy.log('Index of column '+uurl+' is ' +$el)
+        if (teext === uurl) {
+            cy.log('Index of column ' + uurl + ' is ' + $el)
             return index;
-        }
-        else{
-            cy.log('Index of column '+teext+' is ' +index)
+        } else {
+            cy.log('Index of column ' + teext + ' is ' + index)
         }
     });
 });
@@ -347,7 +394,7 @@ Cypress.Commands.add('seedAndVisit', (seedData = 'fixture:dataId') => {
 })
 
 Cypress.Commands.add('waitForLoading', () => {
-    cy.get('.loader-circle.k-i-loading').should('not.exist',{timeout:120000});
+    cy.get('.loader-circle.k-i-loading').should('not.exist', {timeout: 120000});
 })
 
 Cypress.Commands.add('isElementExists', (loc) => {

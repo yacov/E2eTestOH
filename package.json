@@ -8,7 +8,7 @@
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
-    "cypress": "^6.2.1",
+    "cypress": "^6.3.0",
     "cypress-xpath": "^1.6.1",
     "eslint": "^7.2.0",
     "eslint-plugin-cypress": "^2.11.1"

@@ -15,7 +15,7 @@ before(function () {
     if (url.includes('demo')) {
         cy.txDemoLogin(url);
     }
-    if (url.includes('tx.acceliqc.com')) {
+    if (url.includes('tx.acceliqc.com')||url.includes('tx-rc.acceliplan.com')) {
         cy.txQcLogin(url);
     }
     if (url.includes('tx-acc.ss.frontlineeducation.com')) {

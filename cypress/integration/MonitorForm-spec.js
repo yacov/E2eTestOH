@@ -65,7 +65,7 @@ before(function () {
     if(url.includes('demo'))
     {cy.txDemoLogin(url); }
     if(url.includes('qc'))
-    {cy.txqclLogin(url); }
+    {cy.txQcLogin(url); }
     if(url.includes('tx.acceliplan.com'))
     {cy.txProdLogin(url); }
     Cypress.Cookies.preserveOnce('ASP.NET_SessionId', '.ASPHAUTH');
@@ -80,8 +80,8 @@ beforeEach(function () {
 
 after(function (){
     datastr.push([openPL, openCurr, physicalFA]);
- //   cy.writeFile('cypress/fixtures/forms.json', '{}')
- //   sendDatatoGoogle(datastr);
+ // cy.writeFile('cypress/fixtures/forms.json', '{}')
+    sendDatatoGoogle(datastr);
 })
 
 describe('Monitor Initial Event pages performance on  ' + url, function () {
@@ -104,7 +104,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         formName = 'Present Levels';
        // cy.openForm(formName);
       // openPL = cy.openFormAndMeasure(formName);
-        cy.visit("https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=cca6d61c-e1e3-482e-b0e9-ac66008f14c1#PresentLevels&formId=de3165bc-2f7d-4753-b097-ac66008f1573", {
+        cy.visit("https://tx.acceliqc.com/plan/Events/ViewEvent?eventId=9b90b779-c732-4978-abf7-acb7013e061e#PresentLevels&formId=2d87fc94-dba2-4d57-b9be-acb7013e071f", {
             onBeforeLoad: (win) => {
                 win.performance.mark('start-loading')
             },
@@ -136,7 +136,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
     it('Measure Curriculum and Learning open time', function () {
         formName = "Curriculum and Learning Environment";
       //  openCurr = cy.openFormAndMeasure(formName);
-        cy.visit("https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=cca6d61c-e1e3-482e-b0e9-ac66008f14c1#PresentLevels&formId=2c8d1c9f-892f-45a4-b953-ac66008f1573", {
+        cy.visit("https://tx.acceliqc.com/plan/Events/ViewEvent?eventId=9b90b779-c732-4978-abf7-acb7013e061e#PresentLevels&formId=ce0253b7-bab7-4a52-ad86-acb7013e071f", {
             onBeforeLoad: (win) => {
                 win.performance.mark('start-loading')
             },
@@ -179,7 +179,7 @@ cy.get('#plcContent_lblPageTitle').should('contain', 'Home');
         formName = 'Physical Fitness Assessment';
         // cy.openForm(formName);
         // openPL = cy.openFormAndMeasure(formName);
-        cy.visit("https://tx.acceliplan.com/plan/Events/ViewEvent?eventId=cca6d61c-e1e3-482e-b0e9-ac66008f14c1#PhysicalFitnessAssessment&formId=958d5928-d59b-4f8a-878d-ac66008f1581", {
+        cy.visit("https://tx.acceliqc.com/plan/Events/ViewEvent?eventId=9b90b779-c732-4978-abf7-acb7013e061e#PhysicalFitnessAssessment&formId=75a094c4-71bb-4288-af51-acb7013e0729", {
             onBeforeLoad: (win) => {
                 win.performance.mark('start-loading')
             },
